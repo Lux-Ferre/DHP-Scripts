@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.3.0
+// @version      1.4.0
 // @description  Sends custom messages to an account and logs received customs
 // @author       Lux-Ferre
 // @license      MIT
@@ -37,6 +37,12 @@
                         min: 1,
                         max: 30,
                         default: 10
+                    },
+                    {
+                        id:"ignoreModMod",
+                        label: "Do not print ModMod messages in pseudo-console.",
+                        type: "boolean",
+                        default: "false"
                     }
                 ]
             });
@@ -51,7 +57,7 @@
                     content += `<label for='interactor_name_in'><p style="-webkit-text-stroke:1px cadetblue;">Recipient:&nbsp&nbsp</p></label>`
                     content += `<input type="text" id="interactor_name_in"><br/>`
                     content += `<label for='interactor_command_in'><p style="-webkit-text-stroke:1px cadetblue;">Custom Command:&nbsp&nbsp</p></label>`
-                    content += `<input type="text" id="interactor_command_in"><br/><br/>`
+                    content += `<input type="text" size="75" id="interactor_command_in"><br/><br/>`
                     content += `<input type="submit" value="Send">`
                     content += `</form>`
                     content += `<br/>`
@@ -73,6 +79,11 @@
         }
 
         onCustomMessageReceived(player, content, callbackId) {
+            if (this.getConfig("ignoreModMod")){
+                if (content.startsWith("MODMOD")){
+                    return
+                }
+            }
             const output_string = `${player}: ${content}`
             console.log(output_string)
             const textOutput = $("#customs_received")
