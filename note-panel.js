@@ -33,6 +33,7 @@
                 content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.notespanel.saveNotes()'>`
                 content += `<textarea id="notes_box" maxlength="2000" style="width:100%;height:75%"></textarea>`
                 content += `<input type="submit" value="Save">`
+                content += `</form>`
                 content += `</div>`
                 return content
             });
