@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Notes Panel
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Adds a panel for storing semi-persistant notes
 // @author       Lux-Ferre
 // @license      MIT
@@ -31,7 +31,7 @@
                 let content = `<div>`
                 content += `<br/>`
                 content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.notespanel.saveNotes()'>`
-                content += `<textarea id="notes_box" maxlength="2000" style="width:100%;height:75%"></textarea>`
+                content += `<textarea id="notes_box" maxlength="2000" style="width:100%;height:75%;background-color:rgb(25,25,25);color:rgb(255,255,255)"></textarea>`
                 content += `<input type="submit" value="Save">`
                 content += `</form>`
                 content += `</div>`
