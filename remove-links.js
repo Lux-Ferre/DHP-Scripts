@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Database Link Remover
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.0.1
 // @description  Stops items being turned into database etc links in chat
 // @author       Lux-Ferre
 // @license      MIT
@@ -13,7 +13,7 @@
 (function() {
     'use strict';
 
-    class SigilPlugin extends IdlePixelPlusPlugin {
+    class NoLinksPlugin extends IdlePixelPlusPlugin {
         constructor() {
             super("nolinks", {
                 about: {
@@ -31,7 +31,7 @@
         }
     }
 
-    const plugin = new SigilPlugin();
+    const plugin = new NoLinksPlugin();
         IdlePixelPlus.registerPlugin(plugin);
     
 })(); 
