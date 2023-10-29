@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat Highlighter
 // @namespace    lbtechnology.info
-// @version      1.6.0
+// @version      1.6.1
 // @description  Highlights messages containing specified words.
 // @author       Lux-Ferre
 // @license      MIT
@@ -233,12 +233,22 @@
                 wordList = rawWordList;
                 ignoreList = rawIgnoreList
             }
+
+            if (wordList[0] === ""){
+                wordList.shift()
+            }
+            if (ignoreList[0] === ""){
+                ignoreList.shift()
+            }
+            if (friendList[0] === ""){
+                friendList.shift()
+            }
          
-            if (wordList.some(word => message.includes(word)) && wordList != "") {
-                if (!ignoreList.some(word => message.includes(word)) && ignoreList != ""){
+            if (wordList.some(word => message.includes(word))) {
+                if (!ignoreList.some(word => message.includes(word))){
                     this.highlightMessage(data, "word");
                 }
-            } else if (friendList.includes(data.username) && friendList != ""){
+            } else if (friendList.includes(data.username)){
                 this.highlightMessage(data, "friend");
             }
         }
