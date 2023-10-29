@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.4.0
+// @version      1.5.0
 // @description  Sends custom messages to an account and logs received customs
 // @author       Lux-Ferre
 // @license      MIT
@@ -50,10 +50,11 @@
         }
 
         createPanel(){
+            const rowNumber = this.getConfig("textareaLines")
             IdlePixelPlus.addPanel("interactor", "Custom Message Interactor", function() {
                 let content = `<div>`
                     content += `<br/>`
-                    content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendCustom()'>`
+                    content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendRawCustom()'>`
                     content += `<label for='interactor_name_in'><p style="-webkit-text-stroke:1px cadetblue;">Recipient:&nbsp&nbsp</p></label>`
                     content += `<input type="text" id="interactor_name_in"><br/>`
                     content += `<label for='interactor_command_in'><p style="-webkit-text-stroke:1px cadetblue;">Custom Command:&nbsp&nbsp</p></label>`
@@ -63,8 +64,8 @@
                     content += `<br/>`
                     content += `<br/>`
                     content += `<p><p style="-webkit-text-stroke:1px cadetblue;">Most recently received customs:</p></p>`
-                    content += `<textarea id="customs_received" wrap="off" rows="10" cols="75" readonly></textarea>`
-                content += `</div>`
+                    content += `<textarea id="customs_received" wrap="soft" rows="${rowNumber}" style="width: 95%" readonly></textarea>`
+                    content += `</div>`
                 return content
             });
         }
@@ -97,7 +98,7 @@
             textOutput.val(newText)
         }
 
-        sendCustom(){
+        sendRawCustom(){
             const recipient = $("#interactor_name_in").val()
             const customPrompt = $("#interactor_command_in").val()
             $("#interactor_command_in").val("")
