@@ -80,13 +80,45 @@
         }
 
         onCustomMessageReceived(player, content, callbackId) {
+            const customData = this.parseCustom(player, content, callbackId)
+
             if (this.getConfig("ignoreModMod")){
-                if (content.startsWith("MODMOD")){
+                if (customData.plugin === "MODMOD"){
                     return
                 }
             }
-            const output_string = `${player}: ${content}`
+
+            const output_string = `${player}: ${customData.plugin}: ${customData.command}: ${customData.payload}`
+            
             console.log(output_string)
+            
+            this.addToPseudoConsole(output_string)
+        }
+
+        parseCustom(player, content, callbackId){
+            const customData = {
+                player: player,
+                callbackId: callbackId,
+                anwinFormatted: false
+            }
+            const splitPayload = content.split(":")
+            if(splitPayload.length >= 3){
+                customData.anwinFormatted = true
+                customData.plugin = splitPayload[0]
+                customData.command = splitPayload[1]
+                customData.payload = splitPayload.slice(2).join(":")
+            } else {
+                customData.anwinFormatted = false
+                customData.plugin = "unknown"
+                customData.command = "unknown"
+                customData.payload = content
+            }
+
+            return customData
+
+        }
+    
+        addToPseudoConsole(output_string){
             const textOutput = $("#customs_received")
             const lines = textOutput.val().split('\n')
             lines.unshift(output_string)
@@ -97,7 +129,7 @@
             const newText = lines.join('\n')
             textOutput.val(newText)
         }
-
+    
         sendRawCustom(){
             const recipient = $("#interactor_name_in").val()
             const customPrompt = $("#interactor_command_in").val()
