@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Popup Remover
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.0.1
 // @description  Stops vanilla loot popups, leaving only loot log
 // @author       Lux-Ferre
 // @license      MIT
@@ -39,13 +39,13 @@
                         'label': label,
                         'color': background_color,
                     })
+                }
 
-                    try {
-                        var logObj = new LogManager()
-                        logObj.add_entry('monster_drop', logger);
-                    } catch (error) {
-                        console.log(error);
-                    }
+                try {
+                    var logObj = new LogManager()
+                    logObj.add_entry('monster_drop', logger);
+                } catch (error) {
+                    console.log(error);
                 }
             }
         }
@@ -54,4 +54,4 @@
     const plugin = new NoLootPlugin();
     IdlePixelPlus.registerPlugin(plugin);
     
-})(); 
+})();
