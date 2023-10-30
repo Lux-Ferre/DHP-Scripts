@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.5.0
+// @version      1.6.0
 // @description  Sends custom messages to an account and logs received customs
 // @author       Lux-Ferre
 // @license      MIT
@@ -39,10 +39,11 @@
                         default: 10
                     },
                     {
-                        id:"ignoreModMod",
-                        label: "Do not print ModMod messages in pseudo-console.",
-                        type: "boolean",
-                        default: "false"
+                        id: "ignorePluginList",
+                        label: "List of plugins to ignore customs from (comma separated.)",
+                        type: "string",
+                        max: 2000,
+                        default: ""
                     }
                 ]
             });
@@ -82,10 +83,12 @@
         onCustomMessageReceived(player, content, callbackId) {
             const customData = this.parseCustom(player, content, callbackId)
 
-            if (this.getConfig("ignoreModMod")){
-                if (customData.plugin === "MODMOD"){
-                    return
-                }
+            const rawIgnoreList = this.getConfig("ignorePluginList").toLowerCase()
+            const ignoreList = rawIgnoreList.split(',');
+            if (ignoreList[0] === ""){ignoreList.shift()}
+
+            if (ignoreList.includes(customData.plugin.toLowerCase())){
+                return
             }
 
             const output_string = `${player}: ${customData.plugin}: ${customData.command}: ${customData.payload}`
