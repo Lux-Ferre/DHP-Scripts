@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.6.0
+// @version      1.7.0
 // @description  Sends custom messages to an account and logs received customs
 // @author       Lux-Ferre
 // @license      MIT
@@ -56,15 +56,15 @@
                 let content = `<div>`
                     content += `<br/>`
                     content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendRawCustom()'>`
-                    content += `<label for='interactor_name_in'><p style="-webkit-text-stroke:1px cadetblue;">Recipient:&nbsp&nbsp</p></label>`
+                    content += `<label for='interactor_name_in' class="interactor-label">Recipient:&nbsp&nbsp</label>`
                     content += `<input type="text" id="interactor_name_in"><br/>`
-                    content += `<label for='interactor_command_in'><p style="-webkit-text-stroke:1px cadetblue;">Custom Command:&nbsp&nbsp</p></label>`
+                    content += `<label for='interactor_command_in' class="interactor-label">Custom Command:&nbsp&nbsp</label>`
                     content += `<input type="text" size="75" id="interactor_command_in"><br/><br/>`
                     content += `<input type="submit" value="Send">`
                     content += `</form>`
                     content += `<br/>`
                     content += `<br/>`
-                    content += `<p><p style="-webkit-text-stroke:1px cadetblue;">Most recently received customs:</p></p>`
+                    content += `<p class="interactor-label">Most recently received customs:</p>`
                     content += `<textarea id="customs_received" wrap="soft" rows="${rowNumber}" style="width: 95%" readonly></textarea>`
                     content += `</div>`
                 return content
@@ -78,6 +78,12 @@
             `);
             this.createPanel()
             $("#interactor_name_in").val(this.getConfig("receiver"))
+
+            if ("ui-tweaks" in IdlePixelPlus.plugins){
+                this.applyTheme("UIT")
+            } else {
+                this.applyTheme("default")
+            }
         }
 
         onCustomMessageReceived(player, content, callbackId) {
@@ -133,6 +139,20 @@
             textOutput.val(newText)
         }
     
+        applyTheme(theme){
+            let backgroundColour = "#ffffff"
+            let textColour = "#000000"
+            let labelColour = "#000000"
+            if (theme==="UIT"){
+                backgroundColour = IdlePixelPlus.plugins["ui-tweaks"].config["color-chat-area"]
+                textColour = IdlePixelPlus.plugins["ui-tweaks"].config["font-color-chat-area"]
+                labelColour = IdlePixelPlus.plugins["ui-tweaks"].config["font-color-panels"]
+            }
+
+            $(".interactor-label").css({"color": labelColour})
+            $("#customs_received").css({"color": textColour, "background-color": backgroundColour})
+        }
+
         sendRawCustom(){
             const recipient = $("#interactor_name_in").val()
             const customPrompt = $("#interactor_command_in").val()
