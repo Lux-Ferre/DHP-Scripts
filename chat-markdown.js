@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat Markdown
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Adds support for some markdown into chat
 // @author       Lux-Ferre
 // @license      MIT
@@ -45,15 +45,24 @@
             data.modified = false
             let message = data.message
             message = message.replace(/⁓/g, '~')
-            const tickCount = (message.match(/``/g) || []).length;
-            if (tickCount>1){
-                data.modified = true
-                const backtickPairs = Math.floor(tickCount / 2)
-                for (let i=0; i<=backtickPairs; i++){
-                    message = message.replace("``", "<code>")
-                    message = message.replace("``", "</code>")
+            const markdownPairs = {
+                "``": ["``", "<code>", "</code>"],
+                "**": ["\\*\\*", "<strong>", "</strong>"]
+            }
+
+            for (const [markdown, html] of Object.entries(markdownPairs)){
+                const re = new RegExp(html[0],"g");
+                const tickCount = (message.match(re) || []).length;
+                if (tickCount>1){
+                    data.modified = true
+                    const backtickPairs = Math.floor(tickCount / 2)
+                    for (let i=0; i<=backtickPairs; i++){
+                        message = message.replace(markdown, html[1])
+                        message = message.replace(markdown, html[2])
+                    }
                 }
             }
+
             data.message = message
             return data
         }
