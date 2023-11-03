@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Bait Thrower
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.0.1
 // @description  Opens x amount of bait at once and collates the loot
 // @author       Lux-Ferre
 // @license      MIT
@@ -158,7 +158,7 @@
                 html += "</div>";
             }
             loot_body.innerHTML = html;
-            if(window.total_bait_loots % 2 === 0){
+            if($('#modal-loot:visible').length == 0){
                 Modals.toggle("modal-loot");
             }
         }
