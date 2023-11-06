@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      2.0.0
+// @version      2.0.2
 // @description  Sends,receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
@@ -32,10 +32,10 @@
                     },
                     {
                         id: "textareaLines",
-                        label: "Number of lines to display on custom panel.",
+                        label: "Number of messages to keep in pseudo-console (0 for all.) Under 30 will shrink console.",
                         type: "integer",
-                        min: 1,
-                        max: 30,
+                        min: 0,
+                        max: 500,
                         default: 0
                     },
                     {
@@ -162,6 +162,8 @@
             if (commandList[0]===""){
                 commandList.shift()
             }
+
+            commandDatalist.empty()
 
             commandList.forEach((command) => {
                 commandDatalist.append(`<option value="${command}">`)
