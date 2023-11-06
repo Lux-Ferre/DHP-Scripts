@@ -51,7 +51,12 @@
         }
 
         createPanel(){
-            const rowNumber = this.getConfig("textareaLines")
+            const maxRowNumber = this.getConfig("textareaLines")
+            let rowNumber = maxRowNumber
+            if (maxRowNumber >= 30 || maxRowNumber === 0){
+                rowNumber = 30
+            }
+
             IdlePixelPlus.addPanel("interactor", "Custom Message Interactor", function() {
                 const content = `
                     <div>
@@ -66,7 +71,7 @@
                             </div>
                         </div>
                         <div class="d-flex">
-                            <textarea id="customs_received" wrap="soft" class="w-100" rows="${rowNumber}" readonly></textarea>
+                            <textarea id="customs_received" wrap="soft" class="w-100" rows="${rowNumber}" readonly>${'\n'.repeat(rowNumber)}</textarea>
                         </div>
                         <form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendCustom()'>
                             <datalist id="commandList"></datalist>
@@ -147,13 +152,18 @@
         addToPseudoConsole(output_string){
             const textOutput = $("#customs_received")
             const lines = textOutput.val().split('\n')
-            lines.unshift(output_string)
-            if(lines.length > this.getConfig("textareaLines")){
-                lines.pop()
+            const maxLines = this.getConfig("textareaLines")
+            lines.push(output_string)
+            if(lines.length > maxLines && maxLines !== 0){
+                lines.shift()
+            }
+            if (lines[0] === "" && lines.length > 30){
+                lines.shift()
             }
 
             const newText = lines.join('\n')
             textOutput.val(newText)
+            textOutput.scrollTop(textOutput[0].scrollHeight);
         }
     
         applyTheme(theme){
