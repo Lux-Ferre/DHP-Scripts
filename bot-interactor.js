@@ -216,12 +216,18 @@
             const data = datajQuery.val()
             datajQuery.val("")
 
+            let pluginValue = $("#interactor_plugin_overrride").val()
+            
+            if (pluginValue === ""){
+                pluginValue = "interactor"
+            }
+
             let content = ""
 
             if (data !== ""){
-                content = `interactor:${command}:${data}`
+                content = `${pluginValue}:${command}:${data}`
             } else {
-                content = `interactor:${command}`
+                content = `${pluginValue}:${command}`
             }
 
             const payload = {
