@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.7.0
+// @version      1.8.0
 // @description  Sends custom messages to an account and logs received customs
 // @author       Lux-Ferre
 // @license      MIT
@@ -53,20 +53,37 @@
         createPanel(){
             const rowNumber = this.getConfig("textareaLines")
             IdlePixelPlus.addPanel("interactor", "Custom Message Interactor", function() {
-                let content = `<div>`
-                    content += `<br/>`
-                    content += `<form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendRawCustom()'>`
-                    content += `<label for='interactor_name_in' class="interactor-label">Recipient:&nbsp&nbsp</label>`
-                    content += `<input type="text" id="interactor_name_in"><br/>`
-                    content += `<label for='interactor_command_in' class="interactor-label">Custom Command:&nbsp&nbsp</label>`
-                    content += `<input type="text" size="75" id="interactor_command_in"><br/><br/>`
-                    content += `<input type="submit" value="Send">`
-                    content += `</form>`
-                    content += `<br/>`
-                    content += `<br/>`
-                    content += `<p class="interactor-label">Most recently received customs:</p>`
-                    content += `<textarea id="customs_received" wrap="soft" rows="${rowNumber}" style="width: 95%" readonly></textarea>`
-                    content += `</div>`
+                const content = `
+                    <div>
+                        <div class="d-flex">
+                            <div class="me-auto">
+                                <label for='interactor_recipient' class="interactor-label">Recipient:&nbsp&nbsp</label>
+                                <input type="text" id="interactor_recipient">
+                            </div>
+                            <div class="">
+                                <label for='interactor_plugin_overrride' class="interactor-label">Plugin Override:&nbsp&nbsp</label>
+                                <input type="text" id="interactor_plugin_overrride">
+                            </div>
+                        </div>
+                        <div class="d-flex">
+                            <textarea id="customs_received" wrap="soft" class="w-100" rows="${rowNumber}" readonly></textarea>
+                        </div>
+                        <form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendCustom()'>
+                            <datalist id="commandList"></datalist>
+                            <div class="d-flex flex-fill">
+                                <div class="col-3">
+                                    <input type="text" class="w-100" list="commandList" id="interactor_command_in" placeholder="command">
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" class="w-100" id="interactor_payload_in" placeholder="payload">
+                                </div>
+                                <div class="col-1">
+                                    <input type="submit" class="w-100" value="Send">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                `
                 return content
             });
         }
@@ -77,7 +94,7 @@
             <a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('interactor')" title="Custom Message Interactor">Custom&nbsp;&nbsp;&nbsp;</a>
             `);
             this.createPanel()
-            $("#interactor_name_in").val(this.getConfig("receiver"))
+            $("#interactor_recipient").val(this.getConfig("receiver"))
 
             if ("ui-tweaks" in IdlePixelPlus.plugins){
                 this.applyTheme("UIT")
@@ -153,11 +170,24 @@
             $("#customs_received").css({"color": textColour, "background-color": backgroundColour})
         }
 
-        sendRawCustom(){
-            const recipient = $("#interactor_name_in").val()
-            const customPrompt = $("#interactor_command_in").val()
-            $("#interactor_command_in").val("")
-            const content = `interactor:${customPrompt}`
+        sendCustom(){
+            const recipient = $("#interactor_recipient").val()
+
+            const commandjQuery = $("#interactor_command_in")
+            const command = commandjQuery.val()
+            commandjQuery.val("")
+
+            const datajQuery = $("#interactor_payload_in")
+            const data = datajQuery.val()
+            datajQuery.val("")
+
+            let content = ""
+
+            if (data !== ""){
+                content = `interactor:${command}:${data}`
+            } else {
+                content = `interactor:${command}`
+            }
 
             const payload = {
                 content: content, 
