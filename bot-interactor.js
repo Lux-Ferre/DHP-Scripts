@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      1.8.0
-// @description  Sends custom messages to an account and logs received customs
+// @version      2.0.0
+// @description  Sends,receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
@@ -46,6 +46,13 @@
                         default: ""
                     },
                     {
+                        id: "defaultCommandList",
+                        label: "List of preset commands for the command dropdown (comma separated.)",
+                        type: "string",
+                        max: 2000,
+                        default: ""
+                    },
+                    {
                         id: "pluginOverride",
                         label: "Overrides the plugin value in the custom message.",
                         type: "string",
@@ -81,10 +88,10 @@
                             <textarea id="customs_received" wrap="soft" class="w-100" rows="${rowNumber}" readonly>${'\n'.repeat(rowNumber)}</textarea>
                         </div>
                         <form onsubmit='event.preventDefault(); IdlePixelPlus.plugins.custominteractor.sendCustom()'>
-                            <datalist id="commandList"></datalist>
+                            <datalist id="interactorCommandList"></datalist>
                             <div class="d-flex flex-fill">
                                 <div class="col-3">
-                                    <input type="text" class="w-100" list="commandList" id="interactor_command_in" placeholder="command">
+                                    <input type="text" class="w-100" list="interactorCommandList" id="interactor_command_in" placeholder="command">
                                 </div>
                                 <div class="col-8">
                                     <input type="text" class="w-100" id="interactor_payload_in" placeholder="payload">
@@ -149,6 +156,16 @@
             } else {
                 textOutput.attr("rows", maxRows)
             }
+
+            const commandDatalist = $("#interactorCommandList")
+            let commandList = this.getConfig("defaultCommandList").split(",")
+            if (commandList[0]===""){
+                commandList.shift()
+            }
+
+            commandList.forEach((command) => {
+                commandDatalist.append(`<option value="${command}">`)
+            })
         }
 
         parseCustom(player, content, callbackId){
