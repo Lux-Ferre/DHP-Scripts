@@ -36,13 +36,20 @@
                         type: "integer",
                         min: 1,
                         max: 30,
-                        default: 10
+                        default: 0
                     },
                     {
                         id: "ignorePluginList",
                         label: "List of plugins to ignore customs from (comma separated.)",
                         type: "string",
                         max: 2000,
+                        default: ""
+                    },
+                    {
+                        id: "pluginOverride",
+                        label: "Overrides the plugin value in the custom message.",
+                        type: "string",
+                        max: 20,
                         default: ""
                     }
                 ]
@@ -99,13 +106,17 @@
             <a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('interactor')" title="Custom Message Interactor">Custom&nbsp;&nbsp;&nbsp;</a>
             `);
             this.createPanel()
-            $("#interactor_recipient").val(this.getConfig("receiver"))
+            this.setConfigValuesToUI()
 
             if ("ui-tweaks" in IdlePixelPlus.plugins){
                 this.applyTheme("UIT")
             } else {
                 this.applyTheme("default")
             }
+        }
+
+        onConfigsChanged(){
+            this.setConfigValuesToUI()
         }
 
         onCustomMessageReceived(player, content, callbackId) {
@@ -124,6 +135,20 @@
             console.log(output_string)
             
             this.addToPseudoConsole(output_string)
+        }
+
+        setConfigValuesToUI(){
+            $("#interactor_recipient").val(this.getConfig("receiver"))
+            $("#interactor_plugin_overrride").val(this.getConfig("pluginOverride"))
+
+            const maxRows = this.getConfig("textareaLines")
+            const textOutput = $("#customs_received")
+
+            if (maxRows >=30 || maxRows === 0){
+                textOutput.attr("rows", 30)
+            } else {
+                textOutput.attr("rows", maxRows)
+            }
         }
 
         parseCustom(player, content, callbackId){
