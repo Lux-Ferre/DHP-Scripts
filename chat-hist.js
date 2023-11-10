@@ -52,7 +52,7 @@
             if (customData.player === "luxbot"){
                 if (customData.command === "addMessage"){
                     this.tradeHistStream.push(customData.payload)
-                } else if (customData.command === "endStream"){
+                } else if (customData.command === "endstream"){
                     this.addToChat(this.tradeHistStream)
                 }
             }
