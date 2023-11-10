@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat Highlighter
 // @namespace    lbtechnology.info
-// @version      1.6.1
+// @version      1.7.0
 // @description  Highlights messages containing specified words.
 // @author       Lux-Ferre
 // @license      MIT
@@ -36,6 +36,13 @@
                 {
                     id: "ignoreWordList",
                     label: "List of words to ignore on trigger (separate each trigger word with a comma.)",
+                    type: "string",
+                    max: 2000,
+                    default: ""
+                },
+                {
+                    id: "ignoreNameList",
+                    label: "List of players to ignore triggers on (separate each trigger word with a comma.)",
                     type: "string",
                     max: 2000,
                     default: ""
@@ -216,12 +223,14 @@
             let rawWordList = this.getConfig("wordList");
             let rawIgnoreList = this.getConfig("ignoreWordList")
             const friendList = this.getConfig("friendList");
+            const rawIgnoreUserList = this.getConfig("ignoreNameList")
             var message
             var wordList
             var ignoreList
 
             rawWordList = this.processWordList(rawWordList).split(',');
             rawIgnoreList = this.processWordList(rawIgnoreList).split(',');
+            const ignoreUserList = rawIgnoreUserList.split(',')
 
             if (ignoreCase) {
                 message = data.message.toLowerCase();
@@ -243,7 +252,13 @@
             if (friendList[0] === ""){
                 friendList.shift()
             }
-         
+            if (ignoreUserList[0] === ""){
+                ignoreUserList.shift()
+            }
+
+            if(ignoreUserList.includes(data.username)){
+                return
+            }
             if (wordList.some(word => message.includes(word))) {
                 if (!ignoreList.some(word => message.includes(word))){
                     this.highlightMessage(data, "word");
