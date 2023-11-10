@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat Highlighter
 // @namespace    lbtechnology.info
-// @version      1.7.0
+// @version      1.8.0
 // @description  Highlights messages containing specified words.
 // @author       Lux-Ferre
 // @license      MIT
@@ -102,63 +102,6 @@
             this.previous = "";
         }
 
-        addHighlightedMessage(message, highlightType) {
-            const username = message.username;
-            const sigil = message.sigil;
-            const level = message.level;
-            const tag = message.tag;
-            let chatMessage = message.message;
-            let highlightColour = ""
-            const wordColour = this.toRGBA(this.getConfig("colourWordHighlight"))
-            const friendColour = this.toRGBA(this.getConfig("colourFriendHighlight"))
-
-            if ("chatlinks" in IdlePixelPlus.plugins){
-                chatMessage = IdlePixelPlus.plugins['chatlinks'].replaceLinks(chatMessage)
-            }
-
-            if(highlightType === "word") {highlightColour = wordColour}
-            else if(highlightType === "friend") {highlightColour = friendColour}
-            else {highlightColour = "rgba(0, 0, 0, 0)"}
-
-            let tag_set = ""
-
-            switch (tag) {
-                case "donor_tag":
-                    tag_set = `<span class="donor">Donor</span>`
-                    break;
-                case "super_donor_tag":
-                    tag_set = `<span class="super_donor">Super Donor</span>`
-                    break;
-                case "ultra_donor_tag":
-                    tag_set = `<span class="ultra_donor">Ultra Donor</span>`
-                    break;
-                case "contributor_tag":
-                    tag_set = `<span class="contributor">Contributor</span>`
-                    break;
-                case "financier_tag":
-                    tag_set = `<span class="financier">Financier</span>`
-                    break;
-                case "investor_tag":
-                    tag_set = `<img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/investor_tag_example.gif">`
-                    break;
-                case "investor_plus_tag":
-                    tag_set = `<img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/investor_plus_tag_example.gif">`
-                    break;
-                case "moderator_tag":
-                    tag_set = `<span class="moderator">Moderator</span>`
-                    break;
-                case "dev_tag":
-                    tag_set = `<span class="dev">Dev</span>`
-                    break;
-                default:
-                    tag_set = ""
-                    break;
-            }
-
-            const newMessage = `<div style="background-color: ${highlightColour}"><span class="color-green">${Chat._get_time()} </span> <img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${sigil}.png"> ${tag_set} <span class=""></span> <a target="_blank" class="chat-username" href="https://idle-pixel.com/hiscores/search?username=${username}" style="color: rgb(198, 70, 0);">${username}</a><span class="color-grey"> (${level}): </span>${chatMessage}</div>`
-            $("#chat-area").append(newMessage);
-        }
-
         toRGBA(hex) {
             const r = parseInt(hex.slice(1, 3), 16);
             const g = parseInt(hex.slice(3, 5), 16);
@@ -166,16 +109,23 @@
             return `rgba(${r}, ${g}, ${b}, 0.15)`;
         }
 
-        highlightMessage(data, type){
+        highlightMessage(data, highlightType){
             const notificationsEnabled = this.getConfig("notificationsEnabled");
             const soundsEnabled = this.getConfig("soundsEnabled");
             const activeName = this.getConfig("activeName");
             
+            let highlightColour = ""
+            const wordColour = this.toRGBA(this.getConfig("colourWordHighlight"))
+            const friendColour = this.toRGBA(this.getConfig("colourFriendHighlight"))
+
+            if(highlightType === "word") {highlightColour = wordColour}
+            else if(highlightType === "friend") {highlightColour = friendColour}
+            else {highlightColour = "rgba(0, 0, 0, 0)"}
+
             const element = $("#chat-area > *").last();
-            this.addHighlightedMessage(data, type);
-            element.remove();
-            if (type === "word"){
-                if (activeName == var_username || activeName == ""){
+            element.attr("style", `background-color: ${highlightColour}`)
+            if (highlightType === "word"){
+                if (activeName === var_username || activeName === ""){
                     if (soundsEnabled){Sounds.play(Sounds.VARIABLE_POWER_UP);}
                     if (notificationsEnabled){this.notify(data.message, data.username)}
                 }
