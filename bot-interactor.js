@@ -2,7 +2,7 @@
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
 // @version      2.0.2
-// @description  Sends,receives, and displays CUSTOM websocket frames 
+// @description  Sends, receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
