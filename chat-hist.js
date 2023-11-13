@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat History
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Adds the previous 5 chat messages when you log in
 // @author       Lux-Ferre
 // @license      MIT
@@ -84,6 +84,9 @@
         addToChat(chatHistList){
             chatHistList.forEach(message => {
                 Chat.add_to_chat_box(message)
+                if ("chatlinks" in IdlePixelPlus.plugins){
+                    IdlePixelPlus.plugins['chatlinks'].onChat("")
+                }
             })
         }
     }
