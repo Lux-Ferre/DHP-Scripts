@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Bait Thrower
 // @namespace    lbtechnology.info
-// @version      1.0.1
+// @version      1.0.3
 // @description  Opens x amount of bait at once and collates the loot
 // @author       Lux-Ferre
 // @license      MIT
@@ -54,8 +54,9 @@
         }
     
         open_input_dialogue(bait_type){
+            const prettyBaitName = bait_type.toLowerCase().split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
             document.getElementById("modal-input-image").src = get_image(`images/${bait_type.toLowerCase()}.png`);
-            document.getElementById("modal-input-description").innerHTML = `How many ${bait_type} do you want to throw?`;
+            document.getElementById("modal-input-description").innerHTML = `How many ${prettyBaitName} do you want to throw?`;
             document.getElementById("modal-input-text").value = 0;
             document.getElementById("modal-input-button-text").innerHTML = "Throw!";
     
@@ -68,10 +69,17 @@
         }
     
         throwBait(bait_type, num){
-            window.total_bait_loots = num
             window.bait_counter = 0;
             window.bait_loot = {}
             window.tracking_bait = true
+
+            const currentBait = window[`var_${bait_type.toLowerCase()}`]
+
+            if(num > currentBait){
+                window.total_bait_loots = currentBait
+            } else {
+                window.total_bait_loots = num
+            }
     
             for (let i = 0; i < num; i++) {
                 websocket.send(`THROW_${bait_type}`);
