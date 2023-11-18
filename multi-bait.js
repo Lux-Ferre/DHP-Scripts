@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Bait Thrower
 // @namespace    lbtechnology.info
-// @version      1.0.3
+// @version      1.0.4
 // @description  Opens x amount of bait at once and collates the loot
 // @author       Lux-Ferre
 // @license      MIT
@@ -81,7 +81,7 @@
                 window.total_bait_loots = num
             }
     
-            for (let i = 0; i < num; i++) {
+            for (let i = 0; i < window.total_bait_loots; i++) {
                 websocket.send(`THROW_${bait_type}`);
             }
         }
