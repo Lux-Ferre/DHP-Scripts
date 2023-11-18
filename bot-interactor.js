@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      2.0.2
+// @version      2.1.0
 // @description  Sends, receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
@@ -58,6 +58,12 @@
                         type: "string",
                         max: 20,
                         default: ""
+                    },
+                    {
+                        id: "rememberCommand",
+                        label: "Remember last used command in pseudo-console?",
+                        type: "boolean",
+                        default: false
                     }
                 ]
             });
@@ -229,7 +235,10 @@
 
             const commandjQuery = $("#interactor_command_in")
             const command = commandjQuery.val()
-            commandjQuery.val("")
+
+            if (!this.getConfig("rememberCommand")){
+                commandjQuery.val("")
+            }
 
             const datajQuery = $("#interactor_payload_in")
             const data = datajQuery.val()
