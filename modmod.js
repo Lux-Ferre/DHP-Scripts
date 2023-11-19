@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace    lbtechnology.info
-// @version      1.1.0
+// @version      1.2.0
 // @description  DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author       Anwinity & Lux-Ferre
 // @license      MIT
@@ -346,6 +346,15 @@
             $("#modmod-chat-context-menu").on("mouseleave", function() {
                 $(this).hide();
             });
+
+            var openImageDialogue = Modals.open_image_modal
+
+            Modals.open_image_modal = (title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable) => {
+                if (title === "WHOIS"){
+                    message = message.slice(4)
+                }
+                openImageDialogue(title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable)
+            }
         }
  
         contextQuickMute(username) {
