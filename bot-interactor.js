@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      2.1.0
+// @version      2.2.0
 // @description  Sends, receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
@@ -142,8 +142,13 @@
             if (ignoreList.includes(customData.plugin.toLowerCase())){
                 return
             }
+            let IdString = "-1"
 
-            const output_string = `${player}: ${customData.plugin}: ${customData.command}: ${customData.payload}`
+            if (customData.callbackId){
+                IdString = customData.callbackId
+            }
+
+            const output_string = `[${IdString}]${player}: ${customData.plugin}: ${customData.command}: ${customData.payload}`
             
             console.log(output_string)
             
