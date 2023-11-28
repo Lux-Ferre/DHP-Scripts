@@ -21,40 +21,67 @@
                     version: GM_info.script.version,
                     author: GM_info.script.author,
                     description: GM_info.script.description
-                }
+                },
+                config: [
+                    {
+                        id: "kaatAccount",
+                        label: "Account name to running the v-pet.",
+                        type: "string",
+                        max: 20,
+                        default: ""
+                    },
+                ]
             });
             this.previous = "";
         }
 
         onLogin() {
-                this.kaatData = {
-                    hunger: 0,
-                    tiredness: 0,
-                    playfullness: 0
-                }
-                this.createPanel()
+            this.createPanel()
+            this.acquireKaatStats()
+            this.addStyles()
+
+            if (!("kaat-host" in IdlePixelPlus.plugins)){
+                $("#controlTabButton").hide()
+            }
     
-                const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-                    onlineCount.before(`
-                        <a href="#" class="hover float-end link-no-decoration"
-                        onclick="event.preventDefault(); IdlePixelPlus.setPanel('kaat-client')"
-                        title="Nya~">Nya~&nbsp;&nbsp;&nbsp;</a>
-                    `);
-        }
-        
-        onChat(data) { }
+            const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
+                onlineCount.before(`
+                    <a href="#" class="hover float-end link-no-decoration"
+                    onclick="event.preventDefault(); IdlePixelPlus.setPanel('kaat-client')"
+                    title="Nya~">Nya~&nbsp;&nbsp;&nbsp;</a>
+                `);
+            }
+
         onCustomMessageReceived(player, content, callbackId) {
             const customData = this.parseCustom(player, content, callbackId)
             if (!(customData.plugin === "kaatpet" || customData.anwinFormatted)){
                 return
             }
-            if (customData.player === "axe"){
+            if (customData.player === this.getConfig("kaatAccount")){
                 if (customData.command === "kaatData"){
                     this.refreshKaatStats(customData.payload)
                 }
             }
         }
+
+        addStyles(){
+            let borderColour
             
+            if ("ui-tweaks" in IdlePixelPlus.plugins){
+                borderColour = IdlePixelPlus.plugins["ui-tweaks"].config["font-color-panels"]
+            } else {
+                borderColour = "black"
+            }
+
+            $("head").append(`
+                <style id="styles-kaat-client">
+                    :root {
+                        --border-colour: ${borderColour}
+                    }
+                </style>
+            `)
+        }
+
         parseCustom(player, content, callbackId){
             const customData = {
                 player: player,
@@ -80,31 +107,277 @@
         createPanel(){
             IdlePixelPlus.addPanel("kaat-client", "Nya~", function() {
                 const content = `
-                        <div>
-                            <div>
-                                <label for="mood">Mood</label>
-                                <progress id="mood" value="0" max="100"></progress>
-                                <br><br>
-                                <label for="hunger">Hunger</label>
-                                <progress id="hunger" value="0" max="100"></progress>
-                                <br>
-                                <label for="tired">Tiredness</label>
-                                <progress id="tired" value="0" max="100"></progress>
-                                <br>
-                                <label for="playful">Playfulness</label>
-                                <progress id="playful" value="0" max="100"></progress>
+<div class="container" style="width: 100%;">
+    <header>
+        <h1>Kaat Client</h1>
+    </header>
+    <div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation"><a class="nav-link active" role="tab" data-bs-toggle="tab" href="#tab-1">Status</a></li>
+            <li id="controlTabButton" class="nav-item" role="presentation"><a class="nav-link" role="tab" data-bs-toggle="tab" href="#tab-2">Control</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-1" class="tab-pane active" role="tabpanel">
+                <h2>Kaat Status</h2>
+                <div class="vstack">
+                    <div style="border: 2px solid var(--border-colour);">
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h3 style="border: 0px solid var(--border-colour);">Overall Mood</h3>
+                        </div>
+                        <div class="row" style="margin: 0px;">
+                            <div class="col-xl-9 d-flex flex-column justify-content-between align-self-center">
+                                <div class="progress" style="height: 24px;">
+                                    <div id="mood" class="progress-bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col-xl-2"><label class="col-form-label fw-bold">Is alive?</label></div>
+                                            <div class="col-xl-1"><label id="isAliveLbl" class="col-form-label fw-bold"></label></div>
+                                            <div class="col"><label class="col-form-label"></label></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xl-2"><label class="col-form-label fw-bold">Is asleep?</label></div>
+                                            <div class="col-xl-1"><label id="isAsleepLbl" class="col-form-label fw-bold"></label></div>
+                                            <div class="col"><label class="col-form-label"></label></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <button type="button" onclick="IdlePixelPlus.plugins['kaat-client'].acquireKaatStats()">Refresh</button>
+                            <div class="col flex-shrink-1" style="text-align: center;"><img class="img-fluid flex-shrink-1" src="https://cdn.discordapp.com/attachments/1170262289803390997/1177053355240075314/DALLE_2023-11-22_12.57.21_-_Create_a_black_and_white_pixelated_image_of_a_cat_sleeping_with_black_coloration_around_its_ears_on_its_head._The_cat_should_be_depicted_in_a_peaceful.png" style="max-width: 10vw;" /></div>
+                        </div>
+                    </div>
+                    <div style="border: 2px solid var(--border-colour);">
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h3>Individual Stats</h3>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-1"><label class="col-form-label" for="hunger">Hunger</label></div>
+                            <div class="col align-self-center">
+                                <div class="progress" style="height: 24px;">
+                                    <div id="hunger" class="progress-bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                                </div>
                             </div>
                         </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-1"><label class="col-form-label" for="tiredness">Tiredness</label></div>
+                            <div class="col align-self-center">
+                                <div class="progress" style="height: 24px;">
+                                    <div id="tiredness" class="progress-bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-1"><label class="col-form-label" for="social">Social</label></div>
+                            <div class="col align-self-center">
+                                <div class="progress" style="height: 24px;">
+                                    <div id="social" class="progress-bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 0px;">
+                            <div class="col-xl-1"><label class="col-form-label" for="energy">Energy</label></div>
+                            <div class="col align-self-center">
+                                <div class="progress" style="height: 24px;">
+                                    <div id="energy" class="progress-bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 50%;">50%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tab-2" class="tab-pane" role="tabpanel">
+                <h2>Kaat Configs</h2>
+                <div class="vstack">
+                    <div style="border: 2px solid var(--border-colour);">
+                        <div class="row d-flex flex-wrap" style="margin: 0px;border-bottom: 1px dotted var(--border-colour);">
+                            <div class="col-xl-1"><label class="col-form-label"></label></div>
+                            <div class="col-2 col-xl-2 text-center"><button class="btn btn-secondary" type="button" onclick="IdlePixelPlus.plugins[&#39;kaat-client&#39;].populateConfigs()">Load Configs</button></div>
+                            <div class="col-2 col-xl-2 text-center"><label class="col-form-label"></label></div>
+                            <div class="col-2 col-xl-2 text-center"><button class="btn btn-success" type="button" onclick="IdlePixelPlus.plugins[&#39;kaat-host&#39;].revive()">Revive ᓚᘏᗢ</button><label class="form-label"></label></div>
+                            <div class="col-2 col-xl-2 text-center"><label class="col-form-label"></label></div>
+                            <div class="col-4 col-xl-2 text-center" style="text-align: center;"><button class="btn btn-secondary" type="button" onclick="IdlePixelPlus.plugins[&#39;kaat-client&#39;].saveConfigs()">Save Configs</button></div>
+                            <div class="col-xl-1"><label class="col-form-label"></label></div>
+                        </div>
+                    </div>
+                    <div style="border: 2px solid var(--border-colour);">
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h3 style="border: 0px solid var(--border-colour);">Controls</h3>
+                        </div>
+                        <div class="row d-flex flex-wrap" style="margin: 0px;border-bottom: 1px dotted var(--border-colour);">
+                            <div class="col-2 col-xl-2 text-center justify-content-center align-self-center">
+                                <p>Tick Length (ms)</p>
+                            </div>
+                            <div class="col" style="text-align: center;border-right: 1px dotted var(--border-colour);"><input id="tickLengthInput" type="number" min="1000" max="300000" style="width: 100%;" /></div>
+                            <div class="col-2 col-xl-2 text-center" style="text-align: center;">
+                                <p>Cooldown Length (ms)</p>
+                            </div>
+                            <div class="col-4 col-xl-4" style="text-align: center;"><input id="cooldownLengthInput" type="number" min="1000" max="300000" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;border-bottom: 1px dotted var(--border-colour);">
+                            <div class="col-2 col-xl-2 text-center justify-content-center align-self-center">
+                                <p>Hunger removed by !feed</p>
+                            </div>
+                            <div class="col-4 col-xl-4 align-self-center" style="text-align: center;border-right: 1px dotted var(--border-colour);"><label id="feedHungerSliderLbl" class="form-label" for="feedHungerSlider">0</label><input id="feedHungerSlider" class="form-range" type="range" min="1" max="100" step="1" value="50" oninput="$(&#39;#feedHungerSliderLbl&#39;).html(this.value)" /></div>
+                            <div class="col-2 col-xl-2 text-center align-self-center" style="text-align: center;">
+                                <p>Social restored by !pet</p>
+                            </div>
+                            <div class="col-4 col-xl-4 align-self-center" style="text-align: center;"><label id="petSocialSliderLbl" class="form-label" for="petSocialSlider">0</label><input id="petSocialSlider" class="form-range" type="range" min="1" max="100" step="1" value="50" oninput="$(&#39;#petSocialSliderLbl&#39;).html(this.value)" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;">
+                            <div class="col-2 col-xl-2 text-center justify-content-center">
+                                <p>Energy used by !play</p>
+                            </div>
+                            <div class="col-4 col-xl-4 align-self-center" style="text-align: center;border-right: 1px dotted var(--border-colour);"><label id="playEnergySliderLbl" class="form-label" for="playEnergySlider">0</label><input id="playEnergySlider" class="form-range" type="range" min="1" max="100" step="1" value="50" oninput="$(&#39;#playEnergySliderLbl&#39;).html(this.value)" /></div>
+                            <div class="col-2 col-xl-2 text-center flex-shrink-1 align-self-center" style="text-align: center;">
+                                <p>Social restored by !play</p>
+                            </div>
+                            <div class="col-4 col-xl-4 align-self-center" style="text-align: center;"><label id="playSocialSliderLbl" class="form-label" for="playSocialSlider">0</label><input id="playSocialSlider" class="form-range" type="range" min="1" max="100" step="1" value="50" oninput="$(&#39;#playSocialSliderLbl&#39;).html(this.value)" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;">
+                            <div class="col-2 col-xl-2 justify-content-center"></div>
+                            <div class="col-4 col-xl-4 flex-shrink-1" style="text-align: center;"></div>
+                            <div class="col-2 col-xl-2 flex-shrink-1" style="text-align: center;"></div>
+                            <div class="col-4 col-xl-4 flex-shrink-1" style="text-align: center;"></div>
+                        </div>
+                    </div>
+                    <div style="border: 2px solid var(--border-colour);">
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h3>Reply Strings</h3>
+                        </div>
+                        <div class="row" style="margin: 0px;border-top: 2px solid var(--border-colour);border-bottom: 1px solid var(--border-colour);">
+                            <h4>Hunger</h4>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h5>!feed</h5>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Not hungry</label></div>
+                            <div class="col align-self-center"><input id="notHungryInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part one</label></div>
+                            <div class="col align-self-center"><input id="beenFedInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part two - high hunger</label></div>
+                            <div class="col align-self-center"><input id="stillHungryInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part two - low hunger</label></div>
+                            <div class="col align-self-center"><input id="wellFedInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;border-top: 2px solid var(--border-colour);border-bottom: 1px solid var(--border-colour);">
+                            <h4>Tiredness</h4>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Wake up</label></div>
+                            <div class="col align-self-center"><input id="wakeUpInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Is sleeping</label></div>
+                            <div class="col align-self-center"><input id="isSleepingInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h5>!sleep</h5>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Not tired</label></div>
+                            <div class="col align-self-center"><input id="notTiredInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Start sleep</label></div>
+                            <div class="col align-self-center"><input id="startSleepInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;border-top: 2px solid var(--border-colour);border-bottom: 1px solid var(--border-colour);">
+                            <h4>Social</h4>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h5>!play</h5>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">No play</label></div>
+                            <div class="col align-self-center"><input id="noPlayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">No energy to play</label></div>
+                            <div class="col align-self-center"><input id="noEnergyForPlayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part one</label></div>
+                            <div class="col align-self-center"><input id="hadPlayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part two - high social</label></div>
+                            <div class="col align-self-center"><input id="donePlayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Part two - low social</label></div>
+                            <div class="col align-self-center"><input id="morePlayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px solid var(--border-colour);margin: 0px;">
+                            <h5>!pet</h5>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">No pets</label></div>
+                            <div class="col align-self-center"><input id="noPetsInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Had pets</label></div>
+                            <div class="col align-self-center"><input id="hadPetsInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="margin: 0px;border-top: 2px solid var(--border-colour);border-bottom: 1px solid var(--border-colour);">
+                            <h4>Status</h4>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Very high hunger</label></div>
+                            <div class="col align-self-center"><input id="starvingInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">High hunger</label></div>
+                            <div class="col align-self-center"><input id="hungryInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Very high tiredness</label></div>
+                            <div class="col align-self-center"><input id="exhaustedInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">High tiredness</label></div>
+                            <div class="col align-self-center"><input id="sleepyInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Very low social</label></div>
+                            <div class="col align-self-center"><input id="lonelyInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Low social</label></div>
+                            <div class="col align-self-center"><input id="needsAttentionInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">All stats high</label></div>
+                            <div class="col align-self-center"><input id="feelGreatInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">All stats mid</label></div>
+                            <div class="col align-self-center"><input id="feelOkayInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                        <div class="row" style="border-bottom: 1px outset var(--border-colour);margin: 0px;">
+                            <div class="col-xl-2"><label class="col-form-label">Has died</label></div>
+                            <div class="col align-self-center"><input id="hasDiedInput" type="text" style="width: 100%;" /></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                     `
                     return content
                 });
         }
     
         acquireKaatStats(){
-            const kaatAccount = "axe"
+            const kaatAccount = this.getConfig("kaatAccount")
             const command = "kaatDataRequest"
             const data = "None"
             this.sendCustom(kaatAccount, command, data)
@@ -113,17 +386,35 @@
         refreshKaatStats(rawData){
             const data = JSON.parse(rawData)
             
-            const hunger = data.hunger
-            const tired = data.tiredness
-            const playfull = data.playfullness
+            const dataPointMap = {
+                hunger: {value: data.hunger, negative: true},
+                tiredness: {value: data.tiredness, negative: true},
+                energy: {value: data.energy, negative: false},
+                social: {value: data.social, negative: false},
+            }
+
+            dataPointMap.mood = {
+                value: Math.floor(( (100-dataPointMap.hunger.value) + (100-dataPointMap.tiredness.value) + dataPointMap.social.value) / 3),
+                negative: false
+            }
             
-            const avg = (hunger + tired + playfull) / 3
+            for (const [key, data] of Object.entries(dataPointMap)) {
+                const value = data.value
+                const isNegative = data.negative
+                let hue = Math.floor(value * 1.2)
+                if (isNegative){
+                    hue = 120 - hue
+                }
+                $(`#${key}`)
+                    .attr({
+                        "aria-valuenow": value,
+                        "style": `width: ${value}%; background-color: hsl(${hue}, 70%, 50%) !important;`
+                    })
+                    .html(value+'%')
+            }
             
-            $("#hunger").val(hunger)
-            $("#tired").val(tired)
-            $("#playful").val(playfull)
-            $("#mood").val(avg)
-            
+            $("#isAliveLbl").html(data.alive? "Yes" : "No")
+            $("#isAsleepLbl").html(data.sleeping? "Yes" : "No")
         }
                 
         sendCustom(recipient, command, data){
@@ -144,9 +435,153 @@
             IdlePixelPlus.sendCustomMessage(recipient, payload)
         }
     
-}
+        populateConfigs(){
+            const storedReplyStrings = localStorage.getItem("kaatReplies")
+            if (storedReplyStrings){
+                this.replyStrings = JSON.parse(storedReplyStrings)
+            } else {
+                this.replyStrings = {
+                    notHungry: "",
+                    beenFed: "",
+                    stillHungry: "",
+                    wellFed: "",
+                    wakeUp: "",
+                    notTired: "",
+                    startSleep: "",
+                    isSleeping: "",
+                    noPlay: "",
+                    noEnergyForPlay: "",
+                    hadPlay: "",
+                    donePlay: "",
+                    morePlay: "",
+                    noPets: "",
+                    hadPets: "",
+                    starving: "",
+                    hungry: "",
+                    exhausted: "",
+                    sleepy: "",
+                    lonely: "",
+                    needsAttention: "",
+                    feelGreat: "",
+                    feelOkay: "",
+                    hasDied: "",
+                }
+            }
 
-    
+            for (const [key, value] of Object.entries(this.replyStrings)) {
+                $(`#${key}Input`).val(value)
+            }
+
+            const storedConfigs = localStorage.getItem("kaatConfigs")
+            if (storedConfigs){
+                this.configValues = JSON.parse(storedConfigs)
+            } else {
+                this.configValues = {
+                    tickLength: {
+                        value: 0,
+                        element: "tickLengthInput"
+                    },
+                    cooldownLength: {
+                        value: 0,
+                        element: "cooldownLengthInput"
+                    },
+                    feedHungerDif: {
+                        value: 0,
+                        element: "feedHungerSlider"
+                    },
+                    playEnergyDif: {
+                        value: 0,
+                        element: "playEnergySlider"
+                    },
+                    playSocialDif: {
+                        value: 0,
+                        element: "playSocialSlider"
+                    },
+                    petSocialDif: {
+                        value: 0,
+                        element: "petSocialSlider"
+                    },
+                }
+            }
+
+            for (const [key, value] of Object.entries(this.configValues)) {
+                $(`#${value.element}`).val(value.value)
+                if (value.element.endsWith("Slider")){
+                    $(`#${value.element}Lbl`).html(value.value)
+                }
+            }
+        }
+
+        saveConfigs(){
+            const newConfigValues = {
+                tickLength: {
+                    value: 0,
+                    element: "tickLengthInput"
+                },
+                cooldownLength: {
+                    value: 0,
+                    element: "cooldownLengthInput"
+                },
+                feedHungerDif: {
+                    value: 0,
+                    element: "feedHungerSlider"
+                },
+                playEnergyDif: {
+                    value: 0,
+                    element: "playEnergySlider"
+                },
+                playSocialDif: {
+                    value: 0,
+                    element: "playSocialSlider"
+                },
+                petSocialDif: {
+                    value: 0,
+                    element: "petSocialSlider"
+                },
+            }
+
+            const newReplyStrings = {
+                notHungry: "",
+                beenFed: "",
+                stillHungry: "",
+                wellFed: "",
+                wakeUp: "",
+                notTired: "",
+                startSleep: "",
+                isSleeping: "",
+                noPlay: "",
+                noEnergyForPlay: "",
+                hadPlay: "",
+                donePlay: "",
+                morePlay: "",
+                noPets: "",
+                hadPets: "",
+                starving: "",
+                hungry: "",
+                exhausted: "",
+                sleepy: "",
+                lonely: "",
+                needsAttention: "",
+                feelGreat: "",
+                feelOkay: "",
+                hasDied: "",
+            }
+
+            for (const [key, value] of Object.entries(newReplyStrings)) {
+                newReplyStrings[key] = $(`#${key}Input`).val()
+            }
+
+            for (const [key, value] of Object.entries(newConfigValues)) {
+                newConfigValues[key].value = parseInt($(`#${value.element}`).val())
+            }
+
+            const configString = JSON.stringify(newConfigValues)
+            const replyStringsString = JSON.stringify(newReplyStrings)
+
+            localStorage.setItem("kaatConfigs", configString)
+            localStorage.setItem("kaatReplies", replyStringsString)
+        }
+}
 
     const plugin = new KaatClientPlugin();
     IdlePixelPlus.registerPlugin(plugin);
