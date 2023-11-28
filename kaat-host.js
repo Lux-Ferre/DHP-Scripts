@@ -28,7 +28,7 @@
                         label: "Account name to run the v-pet on.",
                         type: "string",
                         max: 20,
-                        default: ""
+                        default: "ᓚᘏᗢ"
                     },
                     {
                         id: "blacklist",

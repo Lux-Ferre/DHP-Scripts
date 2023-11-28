@@ -28,7 +28,7 @@
                         label: "Account name to running the v-pet.",
                         type: "string",
                         max: 20,
-                        default: ""
+                        default: "ᓚᘏᗢ"
                     },
                 ]
             });
