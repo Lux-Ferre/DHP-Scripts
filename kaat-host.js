@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Kaat Host
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.1
 // @description  Kaat Virtual Pet
 // @author       Lux-Ferre
 // @license      MIT
@@ -84,34 +84,43 @@
             if(data.message.startsWith("!kaat")){
                 let currentTime = Date.now()
                 if (currentTime <= this.timerData.commandCooldown){return}
-                const originalCooldown = this.timerData.commandCooldown
-                this.timerData.commandCooldown = currentTime + this.configValues.cooldownLength.value
 
                 if (this.kaatData.sleeping){
                     IdlePixelPlus.sendMessage(`CHAT= ${this.replyStrings.isSleeping}`);
                     return
                 }
 
+                let validCommand
+
                 const command = data.message.split(" ")[1]
                 switch(command){
                     case "feed":
                         this.feedKaat()
+                        validCommand = true
                         break;
                     case "sleep":
                         this.sleepKaat()
+                        validCommand = true
                         break;
                     case "play":
                         this.playKaat()
+                        validCommand = true
                         break;
                     case "pet":
                         this.petKaat()
+                        validCommand = true
                         break;
                     case "status":
                         this.getStatus()
+                        validCommand = true
                         break;
                     default:
-                        this.timerData.commandCooldown = originalCooldown
+                        validCommand = false
                         break;
+                }
+                if(validCommand){
+                    this.timerData.commandCooldown = currentTime + this.configValues.cooldownLength.value
+                    this.timerData.idleTimeCounter = currentTime + 1800000
                 }
                 this.saveKaatData(this.kaatData)
             }
@@ -273,7 +282,8 @@
 
         resetTimerData(){
             this.timerData = {
-                commandCooldown: 0
+                commandCooldown: 0,
+                idleTimeCounter: 0,
             }
             this.saveTimerData(this.timerData)
         }
@@ -310,13 +320,18 @@
 
             this.updateDataPoint("social", -1)
             if (this.kaatData.hunger <= 50 && this.kaatData.tiredness <= 50){
-                this.updateDataPoint("energy", 1)
+                this.updateDataPoint("energy", 5)
             }
             
             if (this.isDead()){
                 this.kaatData.alive = false
                 IdlePixelPlus.sendMessage(`CHAT= ${this.replyStrings.hasDied}`);
                 clearInterval(this.gameLoop)
+            }
+
+            if (Date.now() >= this.timerData.idleTimeCounter){
+                IdlePixelPlus.sendMessage(`CHAT= ᓚᘏᗢ lets out a meow. Someone should check on her.`);
+                this.timerData.idleTimeCounter = Date.now() + 1800000
             }
             this.saveKaatData(this.kaatData)
         }
@@ -412,7 +427,7 @@
             else if (hunger >= 50){reply_string=this.replyStrings.hungry}
             else if (tiredness >= 50){reply_string=this.replyStrings.sleepy}
             else if (social <= 50){reply_string=this.replyStrings.needsAttention}
-            else if (hunger <=20 && tiredness <= 20 && social >= 90){reply_string=this.replyStrings.feelGreat}
+            else if (hunger <=30 && tiredness <= 30 && social >= 75){reply_string=this.replyStrings.feelGreat}
             else {reply_string=this.replyStrings.feelOkay}
 
             IdlePixelPlus.sendMessage(`CHAT= ${reply_string}`);
