@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Kaat Host
 // @namespace    lbtechnology.info
-// @version      1.1.1
+// @version      1.2.0
 // @description  Kaat Virtual Pet
 // @author       Lux-Ferre
 // @license      MIT
@@ -48,6 +48,8 @@
             const storedKaatConfigs = localStorage.getItem("kaatConfigs")
             const storedReplyStrings = localStorage.getItem("kaatReplies")
 
+            this.modList = ["axe", "morgan91", "godofnades", "agrodon"]
+
             if (storedKaatData){
                 this.kaatData = JSON.parse(storedKaatData)
             } else {
@@ -78,7 +80,9 @@
         onChat(data) {
             if (window.var_username !== this.getConfig("kaatAccount")){return}
             if (window.var_username === data.username){return}
-            if ((this.getConfig("blacklist").includes(data.username))){return}
+            const blacklist = this.getConfig("blacklist").split(",")
+            if (blacklist[0] === ""){blacklist.shift()}
+            if ((blacklist.includes(data.username))){return}
             if (!this.kaatData.alive){return}
 
             if(data.message.startsWith("!kaat")){
@@ -134,6 +138,24 @@
             }
             if (customData.command === "kaatDataRequest"){
                 this.sendData(customData.player)
+            } else if (customData.command === "kaatBlacklistAdd"){
+                if (this.modList.includes(player)){
+                    const newBlackList = this.getConfig("blacklist") + "," + customData.payload
+                    const stored = JSON.parse(localStorage.getItem(`idlepixelplus.kaat-host.config`));
+                    stored.blacklist = newBlackList
+                    localStorage.setItem(`idlepixelplus.kaat-host.config`, JSON.stringify(stored));
+                    IdlePixelPlus.loadPluginConfigs('kaat-host')
+                }
+            } else if (customData.command === "kaatCooldown"){
+                if (this.modList.includes(player)){
+                    const newCooldown = parseInt(customData.payload)
+                    if (newCooldown >= 10 && newCooldown <=600){
+                        const newCooldownMillis = newCooldown * 1000
+                        this.configValues.cooldownLength.value = newCooldownMillis
+                        localStorage.setItem("kaatConfigs", JSON.stringify(this.configValues))
+                    }
+
+                }
             }
             this.onlinePlayers.add(player)
         }
