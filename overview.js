@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel+ Overview Panel
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Single panel to control many skills
 // @author       Lux-Ferre
 // @license      MIT
@@ -105,6 +105,7 @@
                 this.addStyles()
                 this.createPanel()
                 this.addBonemealbinToPanel()
+                this.addMeteorsToPanel()
                 this.toggleMultiHarvest()
                 this.addGatheringAreasToPanel()
                 this.highlightGathering()
@@ -458,6 +459,19 @@
             })
         }
     
+        addMeteorsToPanel(){
+            const meteorString = `
+                <div class="col d-flex justify-content-center">
+                    <itembox data-item="playtime" ov-data-item="meteor" class="shadow hover itembox-resource-mining-1" onclick="Modals.open_image_modal('METEOR', 'images/meteor.png', 'Mine the material from the meteor?<br /><br /><span class=\'color-grey font-small\'>This action requires level 90 in mining.</span>','Mine it!','Close','MINE_METEOR')">
+                        <div class="center mt-1"><img draggable="false" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/meteor.png" title="meteor"></div>
+                        <div class="center mt-2"><item-display data-format="number" data-key="meteor">0</item-display></div>
+                    </itembox>
+                </div>`
+
+            const meteorBox = $.parseHTML(meteorString)
+            $("#overviewGeodeContainer").append(meteorBox)
+        }
+
         addBonemealbinToPanel(){
             const binString = `
             <div class="col d-flex justify-content-center">
