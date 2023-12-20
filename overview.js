@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel+ Overview Panel
 // @namespace		lbtechnology.info
-// @version 		1.2.0
+// @version 		1.3.1
 // @description		Single panel to control many skills
 // @author			Lux-Ferre
 // @license			MIT
@@ -98,9 +98,10 @@
 			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
 			onlineCount.before(`
 				<a href="#" class="hover float-end link-no-decoration"
-				onclick="event.preventDefault(); IdlePixelPlus.setPanel('overview')"
-				title="Overview">Overview&nbsp;&nbsp;&nbsp;</a>
-				`);
+					onclick="event.preventDefault(); IdlePixelPlus.setPanel('overview')"
+					title="Overview">Overview&nbsp;&nbsp;&nbsp;
+				</a>
+			`);
 
 			this.addStyles()
 			this.createPanel()
@@ -114,11 +115,13 @@
 			const standardItemBoxes = {
 				overviewLogsContainer: {
 					itemList: ["logs", "oak_logs", "willow_logs", "maple_logs", "stardust_logs", "pine_logs", "redwood_logs", "dense_logs"],
-					onClickString: "IdlePixelPlus.plugins['overview'].clicksLogs(this.getAttribute('ov-data-item'))"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksLogs(this.getAttribute('ov-data-item'))",
+					onContextMenu: ""
 				},
 				overviewBonemealContainer: {
 					itemList: ["bones", "big_bones", "ice_bones", "blood_bones", "dragon_bones", "ashes"],
-					onClickString: "Farming.clicks_bones(this.getAttribute('ov-data-item'))"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksBones(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksBones(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewSeedsContainer: {
 					itemList: [
@@ -128,43 +131,52 @@
 						"apple_tree_seeds", "banana_tree_seeds", "orange_tree_seeds", "palm_tree_seeds", "dragon_fruit_tree_seeds",
 						"bone_tree_seeds", "lava_tree_seeds", "strange_tree_seeds", "potato_seeds", "carrot_seeds", "beet_seeds", "broccoli_seeds"
 					],
-					onClickString: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'))"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewBarsContainer: {
 					itemList: ["bronze_bar", "iron_bar", "silver_bar", "gold_bar", "promethium_bar", "titanium_bar", "ancient_bar", "dragon_bar"],
-					onClickString: "IdlePixelPlus.plugins['overview'].clicksBars(this.getAttribute('ov-data-item'))"
+					onClickString: "Modals.open_stardust_or_sell_item_dialogue('crafting', this.getAttribute('ov-data-item'))",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].rightClicksBars(this.getAttribute('ov-data-item')); return false;"
 				},
 				overviewOresContainer: {
 					itemList: ["stone", "copper", "iron", "silver", "gold", "promethium", "titanium", "ancient_ore", "dragon_ore"],
-					onClickString: "Modals.open_stardust_or_sell_item_dialogue('mining', this.getAttribute('ov-data-item'))"
+					onClickString: "Modals.open_stardust_or_sell_item_dialogue('mining', this.getAttribute('ov-data-item'))",
+					onContextMenu: ""
 				},
 				overviewRecipeContainer: {
 					itemList: ["dotted_salad", "chocolate_cake", "lime_leaf_salad", "golden_apple", "banana_jello", "orange_pie", "pancakes", "coconut_stew", "dragon_fruit_salad",
 							   "potato_shake", "carrot_shake", "beet_shake", "broccoli_shake"],
-					onClickString: `websocket.send('COOKS_BOOK=' + this.getAttribute('ov-data-item'))`
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksRecipe(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksRecipe(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewGatheringBagsContainer: {
 					itemList: ["gathering_loot_bag_mines", "gathering_loot_bag_fields", "gathering_loot_bag_forest", "gathering_loot_bag_fishing_pond",
 							   "gathering_loot_bag_kitchen", "gathering_loot_bag_gem_mine", "gathering_loot_bag_castle", "gathering_loot_bag_junk"],
-					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item').slice(19), 'Open', 'How many?', Items.getItem(this.getAttribute('ov-data-item')), 'OPEN_GATHERING_LOOT')"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksBags(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksBags(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewGemContainer: {
 					itemList: ["sapphire", "emerald", "ruby", "diamond", "blood_diamond"],
-					onClickString: ""
+					onClickString: "",
+					onContextMenu: ""
 				},
 				overviewSDCrystalContainer: {
 					itemList: ["small_stardust_prism", "medium_stardust_prism", "large_stardust_prism", "huge_stardust_prism"],
-					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Smash', 'How many stardust prism do you want to smash?', Items.getItem(this.getAttribute('ov-data-item')), 'SMASH_STARDUST_PRISM')"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksSDCrystals(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksSDCrystals(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewGeodeContainer: {
 					itemList: ["grey_geode", "blue_geode", "green_geode", "red_geode", "cyan_geode", "ancient_geode"],
-					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Open', 'How many geodes to you want to crack?', Items.getItem(this.getAttribute('ov-data-item')), 'CRACK_GEODE')"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksGeode(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksGeode(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewMineralContainer: {
 					itemList: ["blue_marble_mineral", "amethyst_mineral", "sea_crystal_mineral", "dense_marble_mineral", "fluorite_mineral", "clear_marble_mineral",
 							   "jade_mineral", "lime_quartz_mineral", "opal_mineral", "purple_quartz_mineral", "amber_mineral", "smooth_pearl_mineral",
 							   "sulfer_mineral", "topaz_mineral", "tanzanite_mineral", "magnesium_mineral", "frozen_mineral", "blood_crystal_mineral"],
-					onClickString: "Modals.clicks_mineral(this.getAttribute('ov-data-item'))"
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksMineral(this.getAttribute('ov-data-item'), 'left')",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].clicksMineral(this.getAttribute('ov-data-item'), 'right'); return false;"
 				},
 				overviewPotionContainer: {
 					itemList: ["stardust_potion", "energy_potion", "anti_disease_potion", "tree_speed_potion", "smelting_upgrade_potion", "great_stardust_potion", "farming_speed_potion",
@@ -173,20 +185,20 @@
 							   "magic_shiny_crystal_ball_potion", "birdhouse_potion", "rocket_potion", "titanium_potion", "blue_orb_potion", "geode_potion", "magic_crystal_ball_potion",
 							   "stone_converter_potion", "rain_potion", "combat_loot_potion", "rotten_potion", "merchant_speed_potion", "green_orb_potion", "ancient_potion", "guardian_key_potion",
 							   "red_orb_potion"],
-					onClickString: ""
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksPotion(this.getAttribute('ov-data-item'))",
+					onContextMenu: "IdlePixelPlus.plugins['overview'].rightClicksPotion(this.getAttribute('ov-data-item')); return false;"
 					}
 				/*,
-						template: {
-							itemList: [],
-							onClickString: ""
-						}*/
+					template: {
+						itemList: [],
+						onClickString: "",
+						onContextMenu: ""
+					}*/
 				}
 
 			for (const [containerId, itemData] of Object.entries(standardItemBoxes)) {
 				this.addStandardItemsToPanel(containerId, itemData)
 			}
-
-			this.addRightClickToPotions()
 		}
 
 		onMessageReceived(data) {
@@ -216,116 +228,116 @@
 					}
 					.overviewGatheringBoxArea {
 						width: 150px;
-								height: 150px;
-								border-radius: 30px;
-							}
-							.overviewGatheringBoxSelected {
-								box-shadow: 0 0 15px #80ed6f;
-							}
-							.overviewDottedBorder {
-								border-radius: 2px;
-								border: 1px dotted ${borderColour};
-							}
-						</style>
+						height: 150px;
+						border-radius: 30px;
+					}
+					.overviewGatheringBoxSelected {
+						box-shadow: 0 0 15px #80ed6f;
+					}
+					.overviewDottedBorder {
+						border-radius: 2px;
+						border: 1px dotted ${borderColour};
+					}
+				</style>
 			`)
 		}
 
 		createPanel(){
 			IdlePixelPlus.addPanel("overview", "Overview", function() {
-				const content = `
-<div id="overviewTopLevelRow" class="row row-cols-3 d-flex flex-wrap">
-	<div id="overviewFarmingModule" class="col overviewSkillModule">
-		<div id="overviewBonemealContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewSeedsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewFarmingPlotContainer" class="row farming-patches-area g-0 overviewDottedBorder">
-			<div id="overviewFarmingPlot-1" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-1" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(1)" /><label id="overviewFarmingTimer-1" class="form-label">0</label></div>
-			<div id="overviewFarmingPlot-2" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-2" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(2)" /><label id="overviewFarmingTimer-2" class="form-label">0</label></div>
-			<div id="overviewFarmingPlot-3" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-3" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(3)" /><label id="overviewFarmingTimer-3" class="form-label">0</label></div>
-			<div id="overviewFarmingPlot-4" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-4" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(4)" /><label id="overviewFarmingTimer-4" class="form-label">0</label></div>
-			<div id="overviewFarmingPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(5)" /><label id="overviewFarmingTimer-5" class="form-label">0</label></div>
-		</div>
-		<div class="row">
-			<div class="col text-center overviewDottedBorder"><button id="overviewHarvestAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickHarvest()">Harvest All</button></div>
-		</div>
+			const content = `
+	<div id="overviewTopLevelRow" class="row row-cols-3 d-flex flex-wrap">
+	    <div id="overviewFarmingModule" class="col overviewSkillModule">
+	        <div id="overviewBonemealContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewSeedsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewFarmingPlotContainer" class="row farming-patches-area g-0 overviewDottedBorder">
+	            <div id="overviewFarmingPlot-1" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-1" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(1)" /><label id="overviewFarmingTimer-1" class="form-label">0</label></div>
+	            <div id="overviewFarmingPlot-2" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-2" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(2)" /><label id="overviewFarmingTimer-2" class="form-label">0</label></div>
+	            <div id="overviewFarmingPlot-3" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-3" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(3)" /><label id="overviewFarmingTimer-3" class="form-label">0</label></div>
+	            <div id="overviewFarmingPlot-4" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-4" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(4)" /><label id="overviewFarmingTimer-4" class="form-label">0</label></div>
+	            <div id="overviewFarmingPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(5)" /><label id="overviewFarmingTimer-5" class="form-label">0</label></div>
+	        </div>
+	        <div class="row">
+	            <div class="col text-center overviewDottedBorder"><button id="overviewHarvestAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickHarvest()">Harvest All</button></div>
+	        </div>
+	    </div>
+	    <div id="overviewGatheringModule" class="col overviewSkillModule">
+	        <div id="overviewGatheringBagsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewGatheringAreasContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	    </div>
+	    <div id="overviewMineralModule" class="col overviewSkillModule">
+	        <div id="overviewGemContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewSDCrystalContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewGeodeContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewMineralContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	    </div>
+	    <div id="overviewWoodcuttingModule" class="col overviewSkillModule">
+	        <div class="row">
+	            <div class="col-lg-3 overviewDottedBorder">
+	                <div>
+	                    <div class="form-check"><input id="overviewUseLogsNone" class="form-check-input" type="radio" checked name="overviewUseLogsType" value="none" /><label class="form-check-label" for="overviewUseLogsNone">None</label></div>
+	                    <div class="form-check"><input id="overviewUseLogsHeat" class="form-check-input" type="radio" name="overviewUseLogsType" value="heat" /><label class="form-check-label" for="overviewUseLogsHeat">Heat</label></div>
+	                    <div class="form-check"><input id="overviewUseLogsCharcoal" class="form-check-input" type="radio" name="overviewUseLogsType" value="charcoal" /><label class="form-check-label" for="overviewUseLogsCharcoal">Charcoal</label></div>
+	                </div>
+	            </div>
+	            <div class="col">
+	                <div id="overviewLogsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	            </div>
+	        </div>
+	        <div id="overviewWCPlotContainer" class="row farming-patches-area g-0 overviewDottedBorder">
+	            <div id="overviewWCPlot-1" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-1" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(1)" /><label id="overviewWoodcuttingTimer-1" class="form-label">0</label></div>
+	            <div id="overviewWCPlot-2" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-2" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(2)" /><label id="overviewWoodcuttingTimer-2" class="form-label">0</label></div>
+	            <div id="overviewWCPlot-3" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-3" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(3)" /><label id="overviewWoodcuttingTimer-3" class="form-label">0</label></div>
+	            <div id="overviewWCPlot-4" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-4" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(4)" /><label id="overviewWoodcuttingTimer-4" class="form-label">0</label></div>
+	            <div id="overviewWCPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(5)" /><label id="overviewWoodcuttingTimer-5" class="form-label">0</label></div>
+	        </div>
+	        <div class="row">
+	            <div class="col text-center overviewDottedBorder"><button id="overviewChopAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickChop()">Chop All</button></div>
+	        </div>
+	    </div>
+	    <div id="overviewSmeltingModule" class="col overviewSkillModule">
+	        <div class="row">
+	            <div class="col">
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Oil</label><label id="overviewOilNum" class="form-label">0</label></div>
+	                </div>
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Lava</label><label id="overviewLavaNum" class="form-label">0</label></div>
+	                </div>
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Buckets</label><label id="overviewBucketsNum" class="form-label">0</label></div>
+	                </div>
+	            </div>
+	            <div class="col text-center align-self-center"><img id="overviewFurnaceIcon" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/promethium_furnace.png" onclick="Modals.open_furnace_dialogue()" /></div>
+	            <div class="col">
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Charcoal</label><label id="overviewCharcoalNum" class="form-label">0</label></div>
+	                </div>
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Plasma</label><label id="overviewPlasmaNum" class="form-label">0</label></div>
+	                </div>
+	                <div class="row">
+	                    <div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">D. Fire</label><label id="overviewDFireNum" class="form-label">0</label></div>
+	                </div>
+	            </div>
+	        </div>
+	        <div id="overviewBarsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	        <div id="overviewOresContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	    </div>
+	    <div id="overviewCookingModule" class="col overviewSkillModule">
+	        <div class="row">
+	            <div class="col-xl-4 text-center align-self-center overviewDottedBorder"><img id="overviewCooksBookItem" style="width: 100px;height: 100px;" onclick="IdlePixelPlus.plugins[&#39;overview&#39;].clicksCooksBook(&#39;left&#39;)" oncontextmenu="IdlePixelPlus.plugins[&#39;overview&#39;].clicksCooksBook(&#39;right&#39;); return false;" /></div>
+	            <div class="col text-center align-self-center overviewDottedBorder"><label id="overviewCooksBookTimer" class="col-form-label">0</label></div>
+	        </div>
+	        <div id="overviewRecipeContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	    </div>
+	    <div id="overviewBrewingModule" class="col overviewSkillModule">
+	        <div id="overviewPotionContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+	    </div>
+	    <div id="overviewFishingModule" class="col overviewSkillModule"></div>
+	    <div id="overviewMachineryModule" class="col overviewSkillModule"></div>
 	</div>
-	<div id="overviewGatheringModule" class="col overviewSkillModule">
-		<div id="overviewGatheringBagsContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewGatheringAreasContainer" class="row gx-0 gy-2 d-flex justify-content-evenly overviewDottedBorder"></div>
-	</div>
-	<div id="overviewMineralModule" class="col overviewSkillModule">
-		<div id="overviewGemContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewSDCrystalContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewGeodeContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewMineralContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-	</div>
-	<div id="overviewWoodcuttingModule" class="col overviewSkillModule">
-		<div class="row">
-			<div class="col-lg-3 overviewDottedBorder">
-				<div>
-					<div class="form-check"><input id="overviewUseLogsNone" class="form-check-input" type="radio" checked name="overviewUseLogsType" value="none" /><label class="form-check-label" for="overviewUseLogsNone">None</label></div>
-					<div class="form-check"><input id="overviewUseLogsHeat" class="form-check-input" type="radio" name="overviewUseLogsType" value="heat" /><label class="form-check-label" for="overviewUseLogsHeat">Heat</label></div>
-					<div class="form-check"><input id="overviewUseLogsCharcoal" class="form-check-input" type="radio" name="overviewUseLogsType" value="charcoal" /><label class="form-check-label" for="overviewUseLogsCharcoal">Charcoal</label></div>
-				</div>
-			</div>
-			<div class="col">
-				<div id="overviewLogsContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-			</div>
-		</div>
-		<div id="overviewWCPlotContainer" class="row farming-patches-area g-0 overviewDottedBorder">
-			<div id="overviewWCPlot-1" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-1" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(1)" /><label id="overviewWoodcuttingTimer-1" class="form-label">0</label></div>
-			<div id="overviewWCPlot-2" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-2" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(2)" /><label id="overviewWoodcuttingTimer-2" class="form-label">0</label></div>
-			<div id="overviewWCPlot-3" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-3" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(3)" /><label id="overviewWoodcuttingTimer-3" class="form-label">0</label></div>
-			<div id="overviewWCPlot-4" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-4" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(4)" /><label id="overviewWoodcuttingTimer-4" class="form-label">0</label></div>
-			<div id="overviewWCPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(5)" /><label id="overviewWoodcuttingTimer-5" class="form-label">0</label></div>
-		</div>
-		<div class="row">
-			<div class="col text-center overviewDottedBorder"><button id="overviewChopAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickChop()">Chop All</button></div>
-		</div>
-	</div>
-	<div id="overviewSmeltingModule" class="col overviewSkillModule">
-		<div class="row">
-			<div class="col">
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Oil</label><label id="overviewOilNum" class="form-label">0</label></div>
-				</div>
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Lava</label><label id="overviewLavaNum" class="form-label">0</label></div>
-				</div>
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Buckets</label><label id="overviewBucketsNum" class="form-label">0</label></div>
-				</div>
-			</div>
-			<div class="col text-center align-self-center"><img id="overviewFurnaceIcon" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/promethium_furnace.png" /></div>
-			<div class="col">
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Charcoal</label><label id="overviewCharcoalNum" class="form-label">0</label></div>
-				</div>
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">Plasma</label><label id="overviewPlasmaNum" class="form-label">0</label></div>
-				</div>
-				<div class="row">
-					<div class="col d-flex justify-content-between overviewDottedBorder"><label class="form-label">D. Fire</label><label id="overviewDFireNum" class="form-label">0</label></div>
-				</div>
-			</div>
-		</div>
-		<div id="overviewBarsContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-		<div id="overviewOresContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-	</div>
-	<div id="overviewCookingModule" class="col overviewSkillModule">
-		<div class="row">
-			<div class="col-xl-4 text-center align-self-center overviewDottedBorder"><img id="overviewCooksBookItem" style="width: 100px;height: 100px;" onclick="websocket.send(&#39;COOKS_BOOK_READY&#39;)" /></div>
-			<div class="col text-center align-self-center overviewDottedBorder"><label id="overviewCooksBookTimer" class="col-form-label">0</label></div>
-		</div>
-		<div id="overviewRecipeContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-	</div>
-	<div id="overviewBrewingModule" class="col overviewSkillModule">
-		<div id="overviewPotionContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
-	</div>
-	<div id="overviewFishingModule" class="col overviewSkillModule"></div>
-	<div id="overviewMachineryModule" class="col overviewSkillModule"></div>
-</div>
-					`
-				return content
+						`
+			return content
 			});
 		}
 
@@ -342,7 +354,6 @@
 			topLevel.addClass(colClass)
 
 			// Enable/disable modules
-
 			const moduleList = [
 				["farmingEnabled", "overviewFarmingModule"],
 				["gatheringEnabled", "overviewGatheringModule"],
@@ -378,12 +389,13 @@
 			} else {
 				timerStr = `${format_time(timeInSecs - (timerDays * hour24))}`
 			}
+
 			return timerStr;
 		}
 
 		getFurnace(){
 			const furnaceList = ["dragon_furnace", "ancient_furnace", "titanium_furnace", "promethium_furnace", "gold_furnace",
-								 "silver_furnace", "iron_furnace", "bronze_furnace", "stone_furnace"]
+									 "silver_furnace", "iron_furnace", "bronze_furnace", "stone_furnace"]
 			for(let i = 0; i < furnaceList.length; i++) {
 				const furnace = furnaceList[i]
 				if(window["var_"+furnace]){
@@ -396,14 +408,15 @@
 		addStandardItemsToPanel(containerId, itemData){
 			const itemList = itemData.itemList
 			const itemOnClick = itemData.onClickString
+			const itemRightClick = itemData.onContextMenu
 
 			itemList.forEach((itemType) => {
 				const itemElementString = `<div class="col d-flex justify-content-center">
-															<itembox data-item="playtime" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" class="shadow hover">
-																<div class="center mt-1"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${itemType}.png" title="${itemType}"></div>
-																<div class="center mt-2"> <item-display data-format="number" data-key="${itemType}"></item-display></div>
-															</itembox>
-														</div>`
+																<itembox data-item="playtime" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" onContextMenu="${itemRightClick}" class="shadow hover">
+																	<div class="center mt-1"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${itemType}.png" title="${itemType}"></div>
+																	<div class="center mt-2"> <item-display data-format="number" data-key="${itemType}"></item-display></div>
+																</itembox>
+															</div>`
 				const itemBox = $.parseHTML(itemElementString)
 				$(`#${containerId}`).append(itemBox)
 			})
@@ -462,11 +475,11 @@
 				const name = area.name
 
 				const areaElementString = `<div class="col d-flex justify-content-center">
-															<div id="${areaId}" class="d-flex ${background} hover overviewGatheringBoxArea"
-																 ov-data-item="${name}" onclick="IdlePixelPlus.plugins['overview'].changeGatheringArea(this.getAttribute('ov-data-item'))">
-																<img class="m-auto w-80 h-80" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${image}" />
-															</div>
-														</div>`
+																<div id="${areaId}" class="d-flex ${background} hover overviewGatheringBoxArea"
+																	 ov-data-item="${name}" onclick="IdlePixelPlus.plugins['overview'].changeGatheringArea(this.getAttribute('ov-data-item'))">
+																	<img class="m-auto w-80 h-80" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${image}" />
+																</div>
+															</div>`
 				const areaBox = $.parseHTML(areaElementString)
 				$(`#overviewGatheringAreasContainer`).append(areaBox)
 			})
@@ -475,7 +488,10 @@
 		addMeteorsToPanel(){
 			const meteorString = `
 				<div class="col d-flex justify-content-center">
-					<itembox data-item="playtime" ov-data-item="meteor" class="shadow hover itembox-resource-mining-1" onclick="Modals.open_image_modal('METEOR', 'images/meteor.png', 'Mine the material from the meteor?<br /><br /><span class=\'color-grey font-small\'>This action requires level 90 in mining.</span>','Mine it!','Close','MINE_METEOR')">
+					<itembox data-item="playtime" ov-data-item="meteor" class="shadow hover itembox-resource-mining-1"
+	 				  onclick="Modals.open_image_modal('METEOR', 'images/meteor.png', 'Mine the material from the meteor?', 'Mine it!', 'Close', 'MINE_METEOR')"
+					  oncontextmenu="websocket.send('MINE_METEOR')"
+					>
 						<div class="center mt-1"><img draggable="false" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/meteor.png" title="meteor"></div>
 						<div class="center mt-2"><item-display data-format="number" data-key="meteor">0</item-display></div>
 					</itembox>
@@ -496,10 +512,6 @@
 
 			const bonemealBox = $.parseHTML(binString)
 			$("#overviewBonemealContainer").append(bonemealBox)
-		}
-
-		addRightClickToPotions(){
-			$("#overviewPotionContainer").find("itembox").attr("oncontextmenu", "IdlePixelPlus.plugins['overview'].clicksPotion(this.getAttribute('ov-data-item')); return false;")
 		}
 
 		toggleMultiHarvest(){
@@ -636,15 +648,23 @@
 			}
 		}
 
-		clicksSeeds(seedType){
-			if ("slapchop" in IdlePixelPlus.plugins){
-				IdlePixelPlus.plugins.slapchop.quickPlant(seedType, "altKey")
-			} else {
-				Farming.clicks_seed(seedType)
+		clicksSeeds(seedType, clickType){
+			let n = IdlePixelPlus.getVarOrDefault(seedType, 0, "int");
+
+			if(clickType==="left" && n>1) {
+				n = 1;
 			}
+			const donor = DonorShop.has_donor_active(Items.getItem("donor_farm_patches_timestamp"));
+				const maxPlot = donor ? 5 : 3;
+				for(let plot = 1; plot <= maxPlot && n > 0; plot++) {
+					if(IdlePixelPlus.getVar(`farm_${plot}`) === "none") {
+						websocket.send(`PLANT=${seedType}~${plot}`);
+						n--;
+					}
+				}
 		}
 
-		clicksBars(barType){
+		rightClicksBars(barType){
 			const oreBarMap = {
 				bronze_bar: "copper",
 				iron_bar: "iron",
@@ -662,7 +682,81 @@
 			}
 		}
 
+		clicksBags(bagType, clickType){
+			const area = bagType.slice(19)
+			const num = IdlePixelPlus.getVarOrDefault(bagType, 0, "int");
+
+			if (clickType === "left"){
+				Modals.open_input_dialogue_with_value(area, 'Open', 'How many?', num, 'OPEN_GATHERING_LOOT')
+			} else if (num > 0) {
+				websocket.send(`OPEN_GATHERING_LOOT=${area}~${num}`);
+			}
+		}
+
+		clicksSDCrystals(crystalType, clickType){
+			const num = IdlePixelPlus.getVarOrDefault(crystalType, 0, "int");
+
+			if (clickType === "left"){
+				Modals.open_input_dialogue_with_value(crystalType, 'Smash', 'How many stardust prism do you want to smash?', num, 'SMASH_STARDUST_PRISM')
+			} else if (num > 0 ){
+				websocket.send(`SMASH_STARDUST_PRISM=${crystalType}~${num}`);
+			}
+		}
+
+		clicksGeode(geodeType, clickType){
+			const num = IdlePixelPlus.getVarOrDefault(geodeType, 0, "int");
+
+			if (clickType === "left"){
+				Modals.open_input_dialogue_with_value(geodeType, 'Open', 'How many geodes to you want to crack?', num, 'CRACK_GEODE')
+			} else if (num > 0 ){
+				websocket.send(`CRACK_GEODE=${geodeType}~${num}`)
+			}
+		}
+
+		clicksMineral(mineralType, clickType){
+			const num = IdlePixelPlus.getVarOrDefault(mineralType, 0, "int");
+
+			if (clickType === "left"){
+				Modals.clicks_mineral(mineralType)
+			} else if (num > 0 ){
+				websocket.send(`MINERAL_XP=${mineralType}~${num}`)
+			}
+		}
+
+		clicksBones(boneType, clickType){
+			const num = IdlePixelPlus.getVarOrDefault(boneType, 0, "int");
+
+			if (clickType === "left"){
+				Farming.clicks_bones(boneType)
+			} else if (num > 0 ){
+					websocket.send(`ADD_BONEMEAL=${boneType}~${num}`);
+				}
+		}
+
+		clicksCooksBook(clickType){
+			const currentRecipe = IdlePixelPlus.getVarOrDefault("cooks_book_item", "none", "string")
+			if (currentRecipe==="none"){return;}
+
+			websocket.send("COOKS_BOOK_READY")
+
+			if (clickType === "left"){return;}
+
+			websocket.send(`COOKS_BOOK=${currentRecipe}`)
+		}
+
+		clicksRecipe(recipe, clickType){
+			if (clickType === "right"){
+					websocket.send("COOKS_BOOK_READY")
+				}
+
+			websocket.send(`COOKS_BOOK=${recipe}`)
+		}
+
 		clicksPotion(potionType){
+			websocket.send(`BREW=${potionType}~1`)
+		}
+
+		rightClicksPotion(potionType){
 			const potionCount = IdlePixelPlus.getVarOrDefault(potionType, 0, "int")
 
 			if (potionCount<1){return;}
@@ -673,19 +767,19 @@
 						websocket.send(`BREWING_DRINK_COMBAT_LOOT_POTION`);
 					}
 						break;
-					case "rotten_potion":
-						if (window["var_rotten_potion_timer"] === "0"){
-							websocket.send(`BREWING_DRINK_ROTTEN_POTION`);
-						}
-						break;
-						case "merchant_speed_potion":
-							if (window["var_merchant_speed_potion_timer"] === "0"){
-								websocket.send(`BREWING_DRINK_MERCHANT_SPEED_POTION`);
-							}
-						break;
-							default:
-								IdlePixelPlus.sendMessage(`DRINK=${potionType}`);
-								break;
+				case "rotten_potion":
+					if (window["var_rotten_potion_timer"] === "0"){
+						websocket.send(`BREWING_DRINK_ROTTEN_POTION`);
+					}
+					break;
+				case "merchant_speed_potion":
+					if (window["var_merchant_speed_potion_timer"] === "0"){
+						websocket.send(`BREWING_DRINK_MERCHANT_SPEED_POTION`);
+					}
+					break;
+				default:
+					websocket.send(`DRINK=${potionType}`);
+					break;
 			}
 		}
 
