@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel+ Overview Panel
 // @namespace    lbtechnology.info
-// @version      1.1.0
+// @version      1.2.0
 // @description  Single panel to control many skills
 // @author       Lux-Ferre
 // @license      MIT
@@ -71,7 +71,7 @@
                         id: "brewingEnabled",
                         label: "brewingEnabled",
                         type: "boolean",
-                        default: false
+                        default: true
                     },
                     {
                         id: "fishingEnabled",
@@ -95,32 +95,32 @@
         }
 
         onLogin() {
-                const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-                onlineCount.before(`
+            const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
+            onlineCount.before(`
                 <a href="#" class="hover float-end link-no-decoration"
                 onclick="event.preventDefault(); IdlePixelPlus.setPanel('overview')"
                 title="Overview">Overview&nbsp;&nbsp;&nbsp;</a>
                 `);
 
-                this.addStyles()
-                this.createPanel()
-                this.addBonemealbinToPanel()
-                this.addMeteorsToPanel()
-                this.toggleMultiHarvest()
-                this.addGatheringAreasToPanel()
-                this.highlightGathering()
-                this.applyConfigs()
+            this.addStyles()
+            this.createPanel()
+            this.addBonemealbinToPanel()
+            this.addMeteorsToPanel()
+            this.toggleMultiHarvest()
+            this.addGatheringAreasToPanel()
+            this.highlightGathering()
+            this.applyConfigs()
 
-                const standardItemBoxes = {
+            const standardItemBoxes = {
                     overviewLogsContainer: {
                         itemList: ["logs", "oak_logs", "willow_logs", "maple_logs", "stardust_logs", "pine_logs", "redwood_logs", "dense_logs"],
                         onClickString: "IdlePixelPlus.plugins['overview'].clicksLogs(this.getAttribute('ov-data-item'))"
                     },
-                    overviewBonemealContainer: {
+                overviewBonemealContainer: {
                         itemList: ["bones", "big_bones", "ice_bones", "blood_bones", "dragon_bones", "ashes"],
-                        onClickString: "Farming.clicks_bones(this.getAttribute('ov-data-item'))"
-                    },
-                    overviewSeedsContainer: {
+                    onClickString: "Farming.clicks_bones(this.getAttribute('ov-data-item'))"
+                },
+                overviewSeedsContainer: {
                         itemList: [
                             "dotted_green_leaf_seeds", "green_leaf_seeds", "lime_leaf_seeds", "gold_leaf_seeds",
                             "crystal_leaf_seeds", "red_mushroom_seeds", "stardust_seeds", "tree_seeds", "oak_tree_seeds",
@@ -128,54 +128,66 @@
                             "apple_tree_seeds", "banana_tree_seeds", "orange_tree_seeds", "palm_tree_seeds", "dragon_fruit_tree_seeds",
                             "bone_tree_seeds", "lava_tree_seeds", "strange_tree_seeds", "potato_seeds", "carrot_seeds", "beet_seeds", "broccoli_seeds"
                         ],
-                        onClickString: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'))"
-                    },
-                    overviewBarsContainer: {
+                    onClickString: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'))"
+                },
+                overviewBarsContainer: {
                         itemList: ["bronze_bar", "iron_bar", "silver_bar", "gold_bar", "promethium_bar", "titanium_bar", "ancient_bar", "dragon_bar"],
-                        onClickString: "IdlePixelPlus.plugins['overview'].clicksBars(this.getAttribute('ov-data-item'))"
-                    },
-                    overviewOresContainer: {
+                    onClickString: "IdlePixelPlus.plugins['overview'].clicksBars(this.getAttribute('ov-data-item'))"
+                },
+                overviewOresContainer: {
                         itemList: ["stone", "copper", "iron", "silver", "gold", "promethium", "titanium", "ancient_ore", "dragon_ore"],
-                        onClickString: "Modals.open_stardust_or_sell_item_dialogue('mining', this.getAttribute('ov-data-item'))"
-                    },
-                    overviewRecipeContainer: {
+                    onClickString: "Modals.open_stardust_or_sell_item_dialogue('mining', this.getAttribute('ov-data-item'))"
+                },
+                overviewRecipeContainer: {
                         itemList: ["dotted_salad", "chocolate_cake", "lime_leaf_salad", "golden_apple", "banana_jello", "orange_pie", "pancakes", "coconut_stew", "dragon_fruit_salad",
                                    "potato_shake", "carrot_shake", "beet_shake", "broccoli_shake"],
-                        onClickString: `websocket.send('COOKS_BOOK=' + this.getAttribute('ov-data-item'))`
-                    },
-                    overviewGatheringBagsContainer: {
+                    onClickString: `websocket.send('COOKS_BOOK=' + this.getAttribute('ov-data-item'))`
+                },
+                overviewGatheringBagsContainer: {
                         itemList: ["gathering_loot_bag_mines", "gathering_loot_bag_fields", "gathering_loot_bag_forest", "gathering_loot_bag_fishing_pond",
                                    "gathering_loot_bag_kitchen", "gathering_loot_bag_gem_mine", "gathering_loot_bag_castle", "gathering_loot_bag_junk"],
-                        onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item').slice(19), 'Open', 'How many?', Items.getItem(this.getAttribute('ov-data-item')), 'OPEN_GATHERING_LOOT')"
-                    },
-                    overviewGemContainer: {
+                    onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item').slice(19), 'Open', 'How many?', Items.getItem(this.getAttribute('ov-data-item')), 'OPEN_GATHERING_LOOT')"
+                },
+                overviewGemContainer: {
                         itemList: ["sapphire", "emerald", "ruby", "diamond", "blood_diamond"],
-                        onClickString: ""
-                    },
-                    overviewSDCrystalContainer: {
+                    onClickString: ""
+                },
+                overviewSDCrystalContainer: {
                         itemList: ["small_stardust_prism", "medium_stardust_prism", "large_stardust_prism", "huge_stardust_prism"],
-                        onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Smash', 'How many stardust prism do you want to smash?', Items.getItem(this.getAttribute('ov-data-item')), 'SMASH_STARDUST_PRISM')"
-                    },
-                    overviewGeodeContainer: {
+                    onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Smash', 'How many stardust prism do you want to smash?', Items.getItem(this.getAttribute('ov-data-item')), 'SMASH_STARDUST_PRISM')"
+                },
+                overviewGeodeContainer: {
                         itemList: ["grey_geode", "blue_geode", "green_geode", "red_geode", "cyan_geode", "ancient_geode"],
-                        onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Open', 'How many geodes to you want to crack?', Items.getItem(this.getAttribute('ov-data-item')), 'CRACK_GEODE')"
-                    },
-                    overviewMineralContainer: {
+                    onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Open', 'How many geodes to you want to crack?', Items.getItem(this.getAttribute('ov-data-item')), 'CRACK_GEODE')"
+                },
+                overviewMineralContainer: {
                         itemList: ["blue_marble_mineral", "amethyst_mineral", "sea_crystal_mineral", "dense_marble_mineral", "fluorite_mineral", "clear_marble_mineral",
                                    "jade_mineral", "lime_quartz_mineral", "opal_mineral", "purple_quartz_mineral", "amber_mineral", "smooth_pearl_mineral",
                                    "sulfer_mineral", "topaz_mineral", "tanzanite_mineral", "magnesium_mineral", "frozen_mineral", "blood_crystal_mineral"],
-                        onClickString: "Modals.clicks_mineral(this.getAttribute('ov-data-item'))"
-                    }/*,
-                    template: {
-                        itemList: [],
-                        onClickString: ""
-                    }*/
+                    onClickString: "Modals.clicks_mineral(this.getAttribute('ov-data-item'))"
+                },
+                overviewPotionContainer: {
+                        itemList: ["stardust_potion", "energy_potion", "anti_disease_potion", "tree_speed_potion", "smelting_upgrade_potion", "great_stardust_potion", "farming_speed_potion",
+                                   "rare_monster_potion", "super_stardust_potion", "gathering_unique_potion", "heat_potion", "bait_potion", "bone_potion", "furnace_speed_potion", "promethium_potion",
+                                   "super_rare_monster_potion", "ultra_stardust_potion", "cooks_dust_potion", "fighting_dust_potion", "tree_dust_potion", "farm_dust_potion",
+                                   "magic_shiny_crystal_ball_potion", "birdhouse_potion", "rocket_potion", "titanium_potion", "blue_orb_potion", "geode_potion", "magic_crystal_ball_potion",
+                                   "stone_converter_potion", "rain_potion", "combat_loot_potion", "rotten_potion", "merchant_speed_potion", "green_orb_potion", "ancient_potion", "guardian_key_potion",
+                                   "red_orb_potion"],
+                    onClickString: ""
+                    }
+                /*,
+                        template: {
+                            itemList: [],
+                            onClickString: ""
+                        }*/
                 }
 
-                for (const [containerId, itemData] of Object.entries(standardItemBoxes)) {
-                    this.addStandardItemsToPanel(containerId, itemData)
-                }
+            for (const [containerId, itemData] of Object.entries(standardItemBoxes)) {
+                this.addStandardItemsToPanel(containerId, itemData)
             }
+
+            this.addRightClickToPotions()
+        }
 
         onMessageReceived(data) {
             if(Globals.currentPanel !== "panel-overview"){return;}
@@ -184,7 +196,7 @@
                 this.updatePanelPlants()
                 this.updatePanelCooking()
                 this.updateSmeltingPanel()
-           }
+            }
         }
 
         addStyles(){
@@ -197,30 +209,30 @@
             }
 
             $("head").append(`
-                    <style id="styles-overview">
-                        .overviewSkillModule {
-                            border-radius: 3px;
-                            border-style: outset;
-                        }
-                        .overviewGatheringBoxArea {
-                            width: 150px;
-                            height: 150px;
-                            border-radius: 30px;
-                        }
-                        .overviewGatheringBoxSelected {
-                            box-shadow: 0 0 15px #80ed6f;
-                        }
-                        .overviewDottedBorder {
-                            border-radius: 2px;
-                            border: 1px dotted ${borderColour};
-                        }
-                    </style>
-                `)
-            }
+                <style id="styles-overview">
+                    .overviewSkillModule {
+                        border-radius: 3px;
+                        border-style: outset;
+                    }
+                    .overviewGatheringBoxArea {
+                        width: 150px;
+                                height: 150px;
+                                border-radius: 30px;
+                            }
+                            .overviewGatheringBoxSelected {
+                                box-shadow: 0 0 15px #80ed6f;
+                            }
+                            .overviewDottedBorder {
+                                border-radius: 2px;
+                                border: 1px dotted ${borderColour};
+                            }
+                        </style>
+            `)
+        }
 
         createPanel(){
-                IdlePixelPlus.addPanel("overview", "Overview", function() {
-                    const content = `
+            IdlePixelPlus.addPanel("overview", "Overview", function() {
+                const content = `
 <div id="overviewTopLevelRow" class="row row-cols-3 d-flex flex-wrap">
     <div id="overviewFarmingModule" class="col overviewSkillModule">
         <div id="overviewBonemealContainer" class="row g-0 d-flex justify-content-evenly overviewDottedBorder"></div>
@@ -306,14 +318,16 @@
         </div>
         <div id="overviewRecipeContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
     </div>
-    <div id="overviewBrewingModule" class="col overviewSkillModule"></div>
+    <div id="overviewBrewingModule" class="col overviewSkillModule">
+        <div id="overviewPotionContainer" class="row gx-0 d-flex justify-content-evenly overviewDottedBorder"></div>
+    </div>
     <div id="overviewFishingModule" class="col overviewSkillModule"></div>
     <div id="overviewMachineryModule" class="col overviewSkillModule"></div>
 </div>
                     `
-                    return content
-                });
-            }
+                return content
+            });
+        }
 
         applyConfigs() {
             // Modules per row
@@ -352,7 +366,6 @@
                     moduleLocation.hide()
                 }
             })
-
         }
 
         formatTimeWithDays(timeInSecs) {
@@ -366,7 +379,7 @@
                 timerStr = `${format_time(timeInSecs - (timerDays * hour24))}`
             }
             return timerStr;
-       }
+        }
 
         getFurnace(){
             const furnaceList = ["dragon_furnace", "ancient_furnace", "titanium_furnace", "promethium_furnace", "gold_furnace",
@@ -386,62 +399,62 @@
 
             itemList.forEach((itemType) => {
                 const itemElementString = `<div class="col d-flex justify-content-center">
-                                                        <itembox data-item="playtime" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" class="shadow hover">
-                                                            <div class="center mt-1"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${itemType}.png" title="${itemType}"></div>
-                                                            <div class="center mt-2"> <item-display data-format="number" data-key="${itemType}"></item-display></div>
-                                                        </itembox>
-                                                    </div>`
+                                                            <itembox data-item="playtime" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" class="shadow hover">
+                                                                <div class="center mt-1"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${itemType}.png" title="${itemType}"></div>
+                                                                <div class="center mt-2"> <item-display data-format="number" data-key="${itemType}"></item-display></div>
+                                                            </itembox>
+                                                        </div>`
                 const itemBox = $.parseHTML(itemElementString)
                 $(`#${containerId}`).append(itemBox)
-           })
+            })
         }
 
         addGatheringAreasToPanel(){
             const areaData = [
-                    {
-                        id: "overviewGatheringBoxMines",
-                        background: "background-dark-grey",
-                        image: "gathering_mine.png",
-                        name: "mines"
-                    },
-                    {
-                        id: "overviewGatheringBoxFields",
-                        background: "background-dark-green",
-                        image: "gathering_field.png",
-                        name: "fields"
-                    },
-                    {
-                        id: "overviewGatheringBoxForest",
-                        background: "background-brown",
-                        image: "gathering_forest.png",
-                        name: "forest"
-                    },
-                    {
-                        id: "overviewGatheringBoxFishingPond",
-                        background: "background-dark-blue",
-                        image: "gathering_fishing_pond.png",
-                        name: "fishing_pond"
-                    },
-                    {
-                        id: "overviewGatheringBoxKitchen",
-                        background: "background-dark-orange",
-                        image: "gathering_kitchen.png",
-                        name: "kitchen"
-                    },
-                    {
-                        id: "overviewGatheringBoxGemMine",
-                        background: "background-dark-cyan",
-                        image: "gathering_gem_mine.png",
-                        name: "gem_mine"
-                    },
-                    {
-                        id: "overviewGatheringBoxCastle",
-                        background: "background-veryrare",
-                        image: "gathering_castle.png",
-                        name: "castle"
-                    }
-                ]
-    
+                {
+                    id: "overviewGatheringBoxMines",
+                    background: "background-dark-grey",
+                    image: "gathering_mine.png",
+                    name: "mines"
+                },
+                {
+                    id: "overviewGatheringBoxFields",
+                    background: "background-dark-green",
+                    image: "gathering_field.png",
+                    name: "fields"
+                },
+                {
+                    id: "overviewGatheringBoxForest",
+                    background: "background-brown",
+                    image: "gathering_forest.png",
+                    name: "forest"
+                },
+                {
+                    id: "overviewGatheringBoxFishingPond",
+                    background: "background-dark-blue",
+                    image: "gathering_fishing_pond.png",
+                    name: "fishing_pond"
+                },
+                {
+                    id: "overviewGatheringBoxKitchen",
+                    background: "background-dark-orange",
+                    image: "gathering_kitchen.png",
+                    name: "kitchen"
+                },
+                {
+                    id: "overviewGatheringBoxGemMine",
+                    background: "background-dark-cyan",
+                    image: "gathering_gem_mine.png",
+                    name: "gem_mine"
+                },
+                {
+                    id: "overviewGatheringBoxCastle",
+                    background: "background-veryrare",
+                    image: "gathering_castle.png",
+                    name: "castle"
+                }
+            ]
+
             areaData.forEach((area) => {
                 const areaId = area.id
                 const background = area.background
@@ -449,16 +462,16 @@
                 const name = area.name
 
                 const areaElementString = `<div class="col d-flex justify-content-center">
-                                                        <div id="${areaId}" class="d-flex ${background} hover overviewGatheringBoxArea"
-                                                             ov-data-item="${name}" onclick="IdlePixelPlus.plugins['overview'].changeGatheringArea(this.getAttribute('ov-data-item'))">
-                                                            <img class="m-auto w-80 h-80" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${image}" />
-                                                        </div>
-                                                    </div>`
+                                                            <div id="${areaId}" class="d-flex ${background} hover overviewGatheringBoxArea"
+                                                                 ov-data-item="${name}" onclick="IdlePixelPlus.plugins['overview'].changeGatheringArea(this.getAttribute('ov-data-item'))">
+                                                                <img class="m-auto w-80 h-80" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${image}" />
+                                                            </div>
+                                                        </div>`
                 const areaBox = $.parseHTML(areaElementString)
                 $(`#overviewGatheringAreasContainer`).append(areaBox)
             })
         }
-    
+
         addMeteorsToPanel(){
             const meteorString = `
                 <div class="col d-flex justify-content-center">
@@ -485,89 +498,93 @@
             $("#overviewBonemealContainer").append(bonemealBox)
         }
 
+        addRightClickToPotions(){
+            $("#overviewPotionContainer").find("itembox").attr("oncontextmenu", "IdlePixelPlus.plugins['overview'].clicksPotion(this.getAttribute('ov-data-item')); return false;")
+        }
+
         toggleMultiHarvest(){
-                if (!("slapchop" in IdlePixelPlus.plugins)){
-                    $("#overviewChopAll").hide()
-                    $("#overviewHarvestAll").hide()
-                }
+            if (!("slapchop" in IdlePixelPlus.plugins)){
+                $("#overviewChopAll").hide()
+                $("#overviewHarvestAll").hide()
+            }
         }
 
         updatePanelTrees(){
-                for(let i = 1; i < 6; i++) {
-                    const tree = Items.getItemString("tree_" + i);
-                    const stage = Items.getItem("tree_stage_" + i);
-                    const tree_time = Items.getItem("tree_timer_"+ i)
-                    let time_string
+            for(let i = 1; i < 6; i++) {
+                const tree = Items.getItemString("tree_" + i);
+                const stage = Items.getItem("tree_stage_" + i);
+                const tree_time = Items.getItem("tree_timer_"+ i)
+                let time_string
 
-                    if(tree_time===0){
-                        time_string = "EMPTY"
-                    } else if (tree_time===1){
-                        time_string = "READY"
-                    } else {
-                        time_string = this.formatTimeWithDays(tree_time)
-                    }
+                if(tree_time===0){
+                    time_string = "EMPTY"
+                } else if (tree_time===1){
+                    time_string = "READY"
+                } else {
+                    time_string = this.formatTimeWithDays(tree_time)
+                }
 
-                    $(`#overviewWoodcuttingTimer-${i}`).html(time_string)
+                $(`#overviewWoodcuttingTimer-${i}`).html(time_string)
 
-                    let img_url
+                let img_url
 
-                    if(tree !== "none"){
-                        img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_${tree}_${stage}.png`
-                    } else {
-                        if(i === 4 || i === 5){
-                            if(!DonorShop.has_donor_active(Items.getItem("donor_tree_patches_timestamp"))){
-                                img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_locked.png`
-                            } else {
-                                img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png`
-                            }
+                if(tree !== "none"){
+                    img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_${tree}_${stage}.png`
+                } else {
+                    if(i === 4 || i === 5){
+                        if(!DonorShop.has_donor_active(Items.getItem("donor_tree_patches_timestamp"))){
+                            img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_locked.png`
                         } else {
                             img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png`
                         }
+                    } else {
+                        img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png`
                     }
-                    $(`#overviewWoodcuttingPatchImg-${i}`).attr("src", img_url)
                 }
+                $(`#overviewWoodcuttingPatchImg-${i}`).attr("src", img_url)
+            }
         }
 
         updatePanelPlants(){
-                for(let i = 1; i < 6; i++) {
-                    const crop = Items.getItemString("farm_" + i);
-                    const stage = Items.getItem("farm_stage_" + i);
-                    const crop_time = Items.getItem("farm_timer_"+ i)
-                    let time_string
+            for(let i = 1; i < 6; i++) {
+                const crop = Items.getItemString("farm_" + i);
+                const stage = Items.getItem("farm_stage_" + i);
+                const crop_time = Items.getItem("farm_timer_"+ i)
+                let time_string
 
-                    if(crop_time===0){
-                        time_string = "EMPTY"
-                    } else if (crop_time===1){
-                        time_string = "READY"
+                if(crop_time===0){
+                    time_string = "EMPTY"
+                } else if (crop_time===1){
+                    time_string = "READY"
+                } else {
+                    time_string = this.formatTimeWithDays(crop_time)
+                }
+
+                $(`#overviewFarmingTimer-${i}`).html(time_string)
+
+                let img_url
+
+                if(crop !== "none"){
+                    if (Items.getItem("farm_death_" + i) === 1){
+                        img_url = "https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_dead_leaf.png"
                     } else {
-                        time_string = this.formatTimeWithDays(crop_time)
+                        img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_${crop}_${stage}.png`
                     }
-
-                    $(`#overviewFarmingTimer-${i}`).html(time_string)
-
-                    let img_url
-
-                    if(crop !== "none"){
-                        if (Items.getItem("farm_death_" + i) === 1){
-                            img_url = "https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_dead_leaf.png"
-                        } else {
-                            img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_${crop}_${stage}.png`
-                        }
-                    } else {
-                        if(i === 4 || i === 5){
-                            if(!DonorShop.has_donor_active(Items.getItem("donor_tree_patches_timestamp"))){
-                                img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_locked.png`
-                            } else {
-                                img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_none.png`
-                            }
+                } else {
+                    if(i === 4 || i === 5){
+                        if(!DonorShop.has_donor_active(Items.getItem("donor_tree_patches_timestamp"))){
+                            img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_locked.png`
                         } else {
                             img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_none.png`
                         }
+                    } else {
+                        img_url = `https://idlepixel.s3.us-east-2.amazonaws.com/images/farming_none.png`
                     }
-                    $(`#overviewFarmingPatchImg-${i}`).attr("src", img_url)
                 }
+                $(`#overviewFarmingPatchImg-${i}`).attr("src", img_url)
             }
-        
+        }
+
         updatePanelCooking() {
             let current_item = IdlePixelPlus.getVarOrDefault("cooks_book_item", "cooks_book", "string")
             if (current_item === "none"){current_item="cooks_book"}
@@ -645,6 +662,33 @@
             }
         }
 
+        clicksPotion(potionType){
+            const potionCount = IdlePixelPlus.getVarOrDefault(potionType, 0, "int")
+
+            if (potionCount<1){return;}
+
+            switch(potionType){
+                case "combat_loot_potion":
+                    if (window["var_combat_loot_potion_timer"] === "0"){
+                        websocket.send(`BREWING_DRINK_COMBAT_LOOT_POTION`);
+                    }
+                        break;
+                    case "rotten_potion":
+                        if (window["var_rotten_potion_timer"] === "0"){
+                            websocket.send(`BREWING_DRINK_ROTTEN_POTION`);
+                        }
+                        break;
+                        case "merchant_speed_potion":
+                            if (window["var_merchant_speed_potion_timer"] === "0"){
+                                websocket.send(`BREWING_DRINK_MERCHANT_SPEED_POTION`);
+                            }
+                        break;
+                            default:
+                                IdlePixelPlus.sendMessage(`DRINK=${potionType}`);
+                                break;
+            }
+        }
+
         highlightGathering(){
             this.gatheringMap = {
                 mines: "overviewGatheringBoxMines",
@@ -679,5 +723,5 @@
 
     const plugin = new OverviewPlugin();
     IdlePixelPlus.registerPlugin(plugin);
-    
+
 })();
