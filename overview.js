@@ -112,67 +112,67 @@
 			this.applyConfigs()
 
 			const standardItemBoxes = {
-					overviewLogsContainer: {
-						itemList: ["logs", "oak_logs", "willow_logs", "maple_logs", "stardust_logs", "pine_logs", "redwood_logs", "dense_logs"],
-						onClickString: "IdlePixelPlus.plugins['overview'].clicksLogs(this.getAttribute('ov-data-item'))"
-					},
+				overviewLogsContainer: {
+					itemList: ["logs", "oak_logs", "willow_logs", "maple_logs", "stardust_logs", "pine_logs", "redwood_logs", "dense_logs"],
+					onClickString: "IdlePixelPlus.plugins['overview'].clicksLogs(this.getAttribute('ov-data-item'))"
+				},
 				overviewBonemealContainer: {
-						itemList: ["bones", "big_bones", "ice_bones", "blood_bones", "dragon_bones", "ashes"],
+					itemList: ["bones", "big_bones", "ice_bones", "blood_bones", "dragon_bones", "ashes"],
 					onClickString: "Farming.clicks_bones(this.getAttribute('ov-data-item'))"
 				},
 				overviewSeedsContainer: {
-						itemList: [
-							"dotted_green_leaf_seeds", "green_leaf_seeds", "lime_leaf_seeds", "gold_leaf_seeds",
-							"crystal_leaf_seeds", "red_mushroom_seeds", "stardust_seeds", "tree_seeds", "oak_tree_seeds",
-							"willow_tree_seeds", "maple_tree_seeds", "stardust_tree_seeds", "pine_tree_seeds", "redwood_tree_seeds",
-							"apple_tree_seeds", "banana_tree_seeds", "orange_tree_seeds", "palm_tree_seeds", "dragon_fruit_tree_seeds",
-							"bone_tree_seeds", "lava_tree_seeds", "strange_tree_seeds", "potato_seeds", "carrot_seeds", "beet_seeds", "broccoli_seeds"
-						],
+					itemList: [
+						"dotted_green_leaf_seeds", "green_leaf_seeds", "lime_leaf_seeds", "gold_leaf_seeds",
+						"crystal_leaf_seeds", "red_mushroom_seeds", "stardust_seeds", "tree_seeds", "oak_tree_seeds",
+						"willow_tree_seeds", "maple_tree_seeds", "stardust_tree_seeds", "pine_tree_seeds", "redwood_tree_seeds",
+						"apple_tree_seeds", "banana_tree_seeds", "orange_tree_seeds", "palm_tree_seeds", "dragon_fruit_tree_seeds",
+						"bone_tree_seeds", "lava_tree_seeds", "strange_tree_seeds", "potato_seeds", "carrot_seeds", "beet_seeds", "broccoli_seeds"
+					],
 					onClickString: "IdlePixelPlus.plugins['overview'].clicksSeeds(this.getAttribute('ov-data-item'))"
 				},
 				overviewBarsContainer: {
-						itemList: ["bronze_bar", "iron_bar", "silver_bar", "gold_bar", "promethium_bar", "titanium_bar", "ancient_bar", "dragon_bar"],
+					itemList: ["bronze_bar", "iron_bar", "silver_bar", "gold_bar", "promethium_bar", "titanium_bar", "ancient_bar", "dragon_bar"],
 					onClickString: "IdlePixelPlus.plugins['overview'].clicksBars(this.getAttribute('ov-data-item'))"
 				},
 				overviewOresContainer: {
-						itemList: ["stone", "copper", "iron", "silver", "gold", "promethium", "titanium", "ancient_ore", "dragon_ore"],
+					itemList: ["stone", "copper", "iron", "silver", "gold", "promethium", "titanium", "ancient_ore", "dragon_ore"],
 					onClickString: "Modals.open_stardust_or_sell_item_dialogue('mining', this.getAttribute('ov-data-item'))"
 				},
 				overviewRecipeContainer: {
-						itemList: ["dotted_salad", "chocolate_cake", "lime_leaf_salad", "golden_apple", "banana_jello", "orange_pie", "pancakes", "coconut_stew", "dragon_fruit_salad",
-								   "potato_shake", "carrot_shake", "beet_shake", "broccoli_shake"],
+					itemList: ["dotted_salad", "chocolate_cake", "lime_leaf_salad", "golden_apple", "banana_jello", "orange_pie", "pancakes", "coconut_stew", "dragon_fruit_salad",
+							   "potato_shake", "carrot_shake", "beet_shake", "broccoli_shake"],
 					onClickString: `websocket.send('COOKS_BOOK=' + this.getAttribute('ov-data-item'))`
 				},
 				overviewGatheringBagsContainer: {
-						itemList: ["gathering_loot_bag_mines", "gathering_loot_bag_fields", "gathering_loot_bag_forest", "gathering_loot_bag_fishing_pond",
-								   "gathering_loot_bag_kitchen", "gathering_loot_bag_gem_mine", "gathering_loot_bag_castle", "gathering_loot_bag_junk"],
+					itemList: ["gathering_loot_bag_mines", "gathering_loot_bag_fields", "gathering_loot_bag_forest", "gathering_loot_bag_fishing_pond",
+							   "gathering_loot_bag_kitchen", "gathering_loot_bag_gem_mine", "gathering_loot_bag_castle", "gathering_loot_bag_junk"],
 					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item').slice(19), 'Open', 'How many?', Items.getItem(this.getAttribute('ov-data-item')), 'OPEN_GATHERING_LOOT')"
 				},
 				overviewGemContainer: {
-						itemList: ["sapphire", "emerald", "ruby", "diamond", "blood_diamond"],
+					itemList: ["sapphire", "emerald", "ruby", "diamond", "blood_diamond"],
 					onClickString: ""
 				},
 				overviewSDCrystalContainer: {
-						itemList: ["small_stardust_prism", "medium_stardust_prism", "large_stardust_prism", "huge_stardust_prism"],
+					itemList: ["small_stardust_prism", "medium_stardust_prism", "large_stardust_prism", "huge_stardust_prism"],
 					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Smash', 'How many stardust prism do you want to smash?', Items.getItem(this.getAttribute('ov-data-item')), 'SMASH_STARDUST_PRISM')"
 				},
 				overviewGeodeContainer: {
-						itemList: ["grey_geode", "blue_geode", "green_geode", "red_geode", "cyan_geode", "ancient_geode"],
+					itemList: ["grey_geode", "blue_geode", "green_geode", "red_geode", "cyan_geode", "ancient_geode"],
 					onClickString: "Modals.open_input_dialogue_with_value(this.getAttribute('ov-data-item'), 'Open', 'How many geodes to you want to crack?', Items.getItem(this.getAttribute('ov-data-item')), 'CRACK_GEODE')"
 				},
 				overviewMineralContainer: {
-						itemList: ["blue_marble_mineral", "amethyst_mineral", "sea_crystal_mineral", "dense_marble_mineral", "fluorite_mineral", "clear_marble_mineral",
-								   "jade_mineral", "lime_quartz_mineral", "opal_mineral", "purple_quartz_mineral", "amber_mineral", "smooth_pearl_mineral",
-								   "sulfer_mineral", "topaz_mineral", "tanzanite_mineral", "magnesium_mineral", "frozen_mineral", "blood_crystal_mineral"],
+					itemList: ["blue_marble_mineral", "amethyst_mineral", "sea_crystal_mineral", "dense_marble_mineral", "fluorite_mineral", "clear_marble_mineral",
+							   "jade_mineral", "lime_quartz_mineral", "opal_mineral", "purple_quartz_mineral", "amber_mineral", "smooth_pearl_mineral",
+							   "sulfer_mineral", "topaz_mineral", "tanzanite_mineral", "magnesium_mineral", "frozen_mineral", "blood_crystal_mineral"],
 					onClickString: "Modals.clicks_mineral(this.getAttribute('ov-data-item'))"
 				},
 				overviewPotionContainer: {
-						itemList: ["stardust_potion", "energy_potion", "anti_disease_potion", "tree_speed_potion", "smelting_upgrade_potion", "great_stardust_potion", "farming_speed_potion",
-								   "rare_monster_potion", "super_stardust_potion", "gathering_unique_potion", "heat_potion", "bait_potion", "bone_potion", "furnace_speed_potion", "promethium_potion",
-								   "super_rare_monster_potion", "ultra_stardust_potion", "cooks_dust_potion", "fighting_dust_potion", "tree_dust_potion", "farm_dust_potion",
-								   "magic_shiny_crystal_ball_potion", "birdhouse_potion", "rocket_potion", "titanium_potion", "blue_orb_potion", "geode_potion", "magic_crystal_ball_potion",
-								   "stone_converter_potion", "rain_potion", "combat_loot_potion", "rotten_potion", "merchant_speed_potion", "green_orb_potion", "ancient_potion", "guardian_key_potion",
-								   "red_orb_potion"],
+					itemList: ["stardust_potion", "energy_potion", "anti_disease_potion", "tree_speed_potion", "smelting_upgrade_potion", "great_stardust_potion", "farming_speed_potion",
+							   "rare_monster_potion", "super_stardust_potion", "gathering_unique_potion", "heat_potion", "bait_potion", "bone_potion", "furnace_speed_potion", "promethium_potion",
+							   "super_rare_monster_potion", "ultra_stardust_potion", "cooks_dust_potion", "fighting_dust_potion", "tree_dust_potion", "farm_dust_potion",
+							   "magic_shiny_crystal_ball_potion", "birdhouse_potion", "rocket_potion", "titanium_potion", "blue_orb_potion", "geode_potion", "magic_crystal_ball_potion",
+							   "stone_converter_potion", "rain_potion", "combat_loot_potion", "rotten_potion", "merchant_speed_potion", "green_orb_potion", "ancient_potion", "guardian_key_potion",
+							   "red_orb_potion"],
 					onClickString: ""
 					}
 				/*,
