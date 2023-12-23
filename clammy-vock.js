@@ -40,7 +40,7 @@
 		sendChat(){
 			const fullName = `${this.choose(this.firstNames)} ${this.choose(this.lastNames)}`
 			
-			document.getElementById("chat-area-input").value = document.getElementById("chat-area-input").value.replace("Clammy", fullName);
+			document.getElementById("chat-area-input").value = document.getElementById("chat-area-input").value.replace("Clammy", fullName).replace("clammy", fullName);
 			Chat.send()
 		}
 	}
