@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel+ Clammy Vock
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.0.1
 // @description  Replaces the word Clammy with a randomly generated name when sending chat messages.
 // @author       Lux-Ferre
 // @license      MIT
