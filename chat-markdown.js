@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Chat Markdown
 // @namespace    lbtechnology.info
-// @version      1.1.0
+// @version      1.1.1
 // @description  Adds support for some markdown into chat
 // @author       Lux-Ferre
 // @license      MIT
@@ -37,10 +37,6 @@
             }
         }
     
-        onLogin(){
-            $("#game-chat .m-2 .m-2 button:not(.btn-chat-configure)").attr("onClick", "IdlePixelPlus.plugins.markdown.correctTildeSend()")
-        }
-    
         parseMarkdown(data){
             data.modified = false
             let message = data.message
@@ -65,11 +61,6 @@
 
             data.message = message
             return data
-        }
-    
-        correctTildeSend(){
-            document.getElementById("chat-area-input").value = document.getElementById("chat-area-input").value.replace(/~/g, '⁓');
-            Chat.send()
         }
     }
     
