@@ -373,26 +373,43 @@
 
 		}
  
-		handleModModCommand(command, player, content, callbackId) {
-			switch(command) {
-				case "MSG": {
-					this.addModModChatMessage(content, "C");
+		handleModModCommand(customData) {
+			const modsDisplayBox = $("#modmodModList")
+			switch(customData.command) {
+				case "message": {
+					this.addModModChatMessage(customData.payload, "C");
 					break;
 				}
-				case "LIST": {
-					if (content.startsWith("list")){
-						const onlineMods = content.slice(5).split(",")
-						onlineMods.forEach(mod=>{this.onlineMods.add(mod)})
-					}
-					else if (content.startsWith("remove")){
-						this.onlineMods.delete(content.slice(7))
-					}
-					else if (content.startsWith("add")){
-						this.onlineMods.add(content.slice(4))
-					}
-					const modsDisplay = `Online Mods: ${Array.from(this.onlineMods).join(',')}`
-					const modsDisplayBox = $("#modmodModList")
-					modsDisplayBox.val(modsDisplay)
+				case "list": {
+					const onlineMods = customData.payload.split(",")
+					onlineMods.forEach(mod=>{
+						this.onlineMods.add(mod)
+					})
+					modsDisplayBox.val(Array.from(this.onlineMods).join(', '))
+					break;
+				}
+				case "login": {
+					this.onlineMods.add(customData.payload)
+					modsDisplayBox.val(Array.from(this.onlineMods).join(', '))
+					this.addModModChatMessage(`${customData.payload} has logged in.`, "L")
+					break;
+				}
+				case "logout": {
+					this.onlineMods.delete(customData.payload)
+					modsDisplayBox.val(Array.from(this.onlineMods).join(', '))
+					this.addModModChatMessage(`${customData.payload} has logged out.`, "L")
+					break;
+				}
+				case "automod": {
+					this.addModModChatMessage(`${customData.payload}`, "A")
+					break;
+				}
+				case "at": {
+					this.addModModChatMessage(`${customData.payload}`, "@")
+					break;
+				}
+				default: {
+					console.log(customData)
 				}
 			}
 		}
@@ -572,25 +589,43 @@
 		}
  
 		onCustomMessageReceived(player, content, callbackId) {
+			const customData = this.parseCustom(player, content, callbackId)
 			const bot = this.getConfig("bot");
-			if(bot == player) {
+			if(bot === player) {
 				this.setBotOnlineStatus(true);
-				if(content.startsWith("MODMOD:")) {
-					// console.log(`player=${player}, content=${content}, callbackId=${callbackId}`);
-					content = content.substring("MODMOD:".length);
-					const colonSplit = content.split(":");
-					const modmodCommand = colonSplit[0];
-					content = content.substring(modmodCommand.length+1);
-					this.handleModModCommand(modmodCommand, player, content, callbackId);
+				if(customData.plugin==="ModMod") {
+					this.handleModModCommand(customData);
 				}
 			}
 		}
  
 		onCustomMessagePlayerOffline(player, content) {
 			const bot = this.getConfig("bot");
-			if(bot == player) {
+			if(bot === player) {
 				this.setBotOnlineStatus(false);
 			}
+		}
+
+		parseCustom(player, content, callbackId){
+			const customData = {
+				player: player,
+				callbackId: callbackId,
+				anwinFormatted: false
+			}
+			const splitPayload = content.split(":")
+			if(splitPayload.length >= 3){
+				customData.anwinFormatted = true
+				customData.plugin = splitPayload[0]
+				customData.command = splitPayload[1]
+				customData.payload = splitPayload.slice(2).join(":")
+			} else {
+				customData.anwinFormatted = false
+				customData.plugin = "unknown"
+				customData.command = "unknown"
+				customData.payload = content
+			}
+			
+			return customData
 		}
  
 	}
