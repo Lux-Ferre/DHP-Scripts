@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.0.0
+// @version			2.1.1
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -32,12 +32,6 @@
 						default: "luxbot"
 					},
 					{
-						id: "suppressLoginMessages",
-						label: "Suppress Login/Logout Messages",
-						type: "boolean",
-						default: false
-					},
-					{
 						label: "For Market Spy",
 						type: "label"
 					},
@@ -64,14 +58,6 @@
 						id: "modstuffPassword",
 						label: "modstuff pass",
 						type: "string"
-					},
-					{
-						id: "textareaLines",
-						label: "Number of lines to display on custom panel.",
-						type: "integer",
-						min: 1,
-						max: 300,
-						default: 100
 					}
 				]
 			});
@@ -269,10 +255,6 @@
 		}
  
 		addModModChatMessage(message, messageType) {
-			if(this.getConfig("suppressLoginMessages") && messageType==="L") {
-				return;
-			}
-
 			let backgroundClass
 			let boxClass
 			let toggleClass
@@ -557,7 +539,7 @@
 			// MUTE=username~hours~reason~ip
 			IdlePixelPlus.sendMessage(`MUTE=${username}~1~quick mute [${window["var_username"]}]~0`);
 			$("#modmod-chat-context-menu").hide();
-			this.addModModChatMessage(`${window["var_username"]}quick muted ${username}`, "M")
+			this.addModModChatMessage(`${window["var_username"]} quick muted ${username}`, "M")
 			return false;
 		}
  
@@ -565,7 +547,7 @@
 			// MUTE=username~hours~reason~ip
 			IdlePixelPlus.sendMessage(`MUTE=${username}~0~quick unmute [${window["var_username"]}]~0`);
 			$("#modmod-chat-context-menu").hide();
-			this.addModModChatMessage(`${window["var_username"]}quick unmuted ${username}`, "M")
+			this.addModModChatMessage(`${window["var_username"]} quick unmuted ${username}`, "M")
 			return false;
 		}
  
@@ -624,7 +606,7 @@
 				customData.command = "unknown"
 				customData.payload = content
 			}
-			
+
 			return customData
 		}
  
