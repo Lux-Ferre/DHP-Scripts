@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.1.1
+// @version			2.2.0
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -32,15 +32,7 @@
 						default: "luxbot"
 					},
 					{
-						label: "For Market Spy",
-						type: "label"
-					},
-					{
-						label: "Requires Market Overall 1.0.16 or later",
-						type: "label"
-					},
-					{
-						label: "if you change these it requires a refresh",
+						label: "For market names - requires Market Overall (refresh if changed)",
 						type: "label"
 					},
 					{
@@ -55,14 +47,49 @@
 						type: "string"
 					},
 					{
+						label: "Panel Configs (Refresh to apply)",
+						type: "label"
+					},
+					{
 						id: "modstuffPassword",
 						label: "modstuff pass",
 						type: "string"
+					},
+					{
+						id: "loginColour",
+						label: "Login event colour:",
+						type: "color",
+						default: "#00FF00"
+					},
+					{
+						id: "automodColour",
+						label: "Automod event colour:",
+						type: "color",
+						default: "#FF0000"
+					},
+					{
+						id: "atPingColour",
+						label: "At ping colour:",
+						type: "color",
+						default: "#0000FF"
+					},
+					{
+						id: "contextColour",
+						label: "Context menu event colour:",
+						type: "color",
+						default: "#00FFFF"
 					}
 				]
 			});
 			this.playerMap = {};
 			this.onlineMods = new Set()
+		}
+
+		toRGBA(hex, alpha) {
+			const r = parseInt(hex.slice(1, 3), 16);
+			const g = parseInt(hex.slice(3, 5), 16);
+			const b = parseInt(hex.slice(5, 7), 16);
+			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 		}
  
 		createPanel(){
@@ -114,6 +141,20 @@
 		}
 
 		addStyles(){
+			const loginColourHex = this.getConfig("loginColour")
+			const automodColourHex = this.getConfig("automodColour")
+			const atPingColourHex = this.getConfig("atPingColour")
+			const contextColourHex = this.getConfig("contextColour")
+
+			const loginMessageColour = this.toRGBA(loginColourHex, 0.15)
+			const automodMessageColour = this.toRGBA(automodColourHex, 0.15)
+			const atPingMessageColour = this.toRGBA(atPingColourHex, 0.15)
+			const contextMessageColour = this.toRGBA(contextColourHex, 0.15)
+
+			const loginBoxColour = this.toRGBA(loginColourHex, 0.5)
+			const automodBoxColour = this.toRGBA(automodColourHex, 0.5)
+			const atPingBoxColour = this.toRGBA(atPingColourHex, 0.5)
+			const contextBoxColour = this.toRGBA(contextColourHex, 0.5)
 			let borderColour
 
 			if ("ui-tweaks" in IdlePixelPlus.plugins){
@@ -150,13 +191,13 @@
 }
 
 			.modmodLoginMessageBackground {
-				background-color: rgba(0, 255, 0, 0.15);
+				background-color: ${loginMessageColour};
 			}
 			.modmodLoginMessageBox{
 				color: black;
 				font-weight: 500;
-				background-color: limegreen;
-				border: green;
+				background-color: ${loginBoxColour};
+				border: ${loginColourHex};
 				font-size: smaller;
 				padding: 2px 4px;
 			}
@@ -166,35 +207,35 @@
 				display: none;
 			}
 			.modmodAutomodMessageBackground {
-				background-color: rgba(255, 0, 0, 0.15);
+				background-color: ${automodMessageColour};
 			}
 			.modmodAutomodMessageBox{
 				color: black;
 				font-weight: 500;
-				background-color: maroon;
-				border: red;
+				background-color: ${automodBoxColour};
+				border: ${automodColourHex};
 				font-size: smaller;
 				padding: 2px 4px;
 			}
 			.modmodAtMessageBackground {
-				background-color: rgba(255, 0, 0, 0.15);
+				background-color: ${atPingMessageColour};
 			}
 			.modmodAtMessageBox{
 				color: black;
 				font-weight: 500;
-				background-color: maroon;
-				border: red;
+				background-color: ${atPingBoxColour};
+				border: ${atPingColourHex};
 				font-size: smaller;
 				padding: 2px 4px;
 			}
 			.modmodMenuMessageBackground {
-				background-color: rgba(255, 0, 0, 0.15);
+				background-color: ${contextMessageColour};
 			}
 			.modmodMenuMessageBox {
 				color: black;
 				font-weight: 500;
-				background-color: maroon;
-				border: red;
+				background-color: ${contextBoxColour};
+				border: ${contextColourHex};
 				font-size: smaller;
 				padding: 2px 4px;
 			}
