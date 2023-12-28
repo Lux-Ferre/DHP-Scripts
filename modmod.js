@@ -431,6 +431,9 @@
 					this.addModModChatMessage(`${customData.payload}`, "@")
 					break;
 				}
+				case "context": {
+					this.addModModChatMessage(`${customData.payload}`, "M")
+				}
 				default: {
 					console.log(customData)
 				}
@@ -575,12 +578,31 @@
 				});
 			}
 		}
+
+		broadcastContextAction(action){
+			const bot = this.getConfig("bot")
+			const content = `MODMOD:context:${action}`
+
+			const payload = {
+				content: content,
+				onResponse: function(player, content, callbackId) {
+					return true;
+					},
+				onOffline: function(player, content) {
+					console.log(content)
+				},
+				timeout: 2000 // callback expires after 2 seconds
+			}
+			IdlePixelPlus.sendCustomMessage(bot, payload)
+		}
  
 		contextQuickMute(username) {
 			// MUTE=username~hours~reason~ip
 			IdlePixelPlus.sendMessage(`MUTE=${username}~1~quick mute [${window["var_username"]}]~0`);
 			$("#modmod-chat-context-menu").hide();
-			this.addModModChatMessage(`${window["var_username"]} quick muted ${username}`, "M")
+			const action = `${window["var_username"]} quick muted ${username}`
+			this.broadcastContextAction(action)
+			this.addModModChatMessage(action, "M")
 			return false;
 		}
  
@@ -588,7 +610,9 @@
 			// MUTE=username~hours~reason~ip
 			IdlePixelPlus.sendMessage(`MUTE=${username}~0~quick unmute [${window["var_username"]}]~0`);
 			$("#modmod-chat-context-menu").hide();
-			this.addModModChatMessage(`${window["var_username"]} quick unmuted ${username}`, "M")
+			const action = `${window["var_username"]} quick unmuted ${username}`
+			this.broadcastContextAction(action)
+			this.addModModChatMessage(action, "M")
 			return false;
 		}
  
@@ -596,7 +620,9 @@
 			// CHAT=/smute anwinity
 			IdlePixelPlus.sendMessage(`CHAT=/smute ${username}`);
 			$("#modmod-chat-context-menu").hide();
-			this.addModModChatMessage(`${window["var_username"]} muted ${username}`, "M")
+			const action = `${window["var_username"]} muted ${username}`
+			this.broadcastContextAction(action)
+			this.addModModChatMessage(action, "M")
 			return false;
 		}
  
