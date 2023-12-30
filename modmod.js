@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.3.1
+// @version			2.4.0
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -342,6 +342,8 @@
 			chatBox.append(newMessageElement);
 
 			chatBox.scrollTop(chatBox[0].scrollHeight);
+
+			this.showNotification(messageType)
 		}
 
 		filterChatMessages(){
@@ -433,6 +435,10 @@
 				}
 				case "context": {
 					this.addModModChatMessage(`${customData.payload}`, "M")
+					break;
+				}
+				case "HELLO": {
+					break;
 				}
 				default: {
 					console.log(customData)
@@ -505,6 +511,14 @@
 					message = message.slice(4)
 				}
 				openImageDialogue(title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable)
+			}
+
+			this.createNotification()
+		}
+
+		onPanelChanged(panelBefore, panelAfter){
+			if (panelAfter==="modmod"){
+				$("#modmodNotification").hide()
 			}
 		}
 
@@ -672,6 +686,41 @@
 			}
 
 			return customData
+		}
+
+		createNotification(){
+			const notificationString = `
+			<div id="modmodNotification" class="notification hover" onclick="IdlePixelPlus.setPanel('modmod')">
+        		<img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/diamond_hammer.png" class="w20">
+        		<span class="font-small color-yellow">ModMod</span>
+    		</div>
+			`
+
+			const notificationElement = $.parseHTML(notificationString)
+			const notificationBar = $("#notifications-area")
+
+			notificationBar.append(notificationElement)
+			$("#modmodNotification").hide()
+		}
+
+		showNotification(type){
+			if(Globals.currentPanel === "modmod"){return;}
+
+			const typeMap = {
+				"L": "#modmodLoginEventsCheck",
+				"A": "#modmodAutoModEventsCheck",
+				"@": "#modmodAtPingsCheck",
+				"M": "#modmodContextEventsCheck",
+				"C": "#modmodChatMessageCheck"
+			}
+
+			const check = typeMap[type]
+
+			const isChecked = $(check).is(':checked')
+			if(isChecked){
+				$("#modmodNotification").show()
+			}
+
 		}
  
 	}
