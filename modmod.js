@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.4.0
+// @version			2.4.1
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -12,9 +12,7 @@
  
 (function() {
 	'use strict';
- 
-	const botUsername = "luxbot";
- 
+
 	class ModModPlugin extends IdlePixelPlusPlugin {
 		constructor() {
 			super("ModMod", {
@@ -94,7 +92,7 @@
  
 		createPanel(){
 			IdlePixelPlus.addPanel("modmod", "ModMod Panel", function() {
-				let content = `
+				return `
 <div class="modmodUIContainer w-100">
     <div id="modmodInfoModule" class="row modmodUIModule">
         <div class="col">
@@ -103,7 +101,7 @@
             </div>
             <div class="row">
                 <div class="col-2 text-end align-self-center"><label class="col-form-label">Online Mods:</label></div>
-                <div id="modmodBotStatusContainer" class="col-10 d-flex"><textarea id="modmodModList" class="w-100 readonly" rows="1" wrap="off"></textarea></div>
+                <div id="modmodBotStatusContainer" class="col-10 d-flex"><textarea id="modmodModList" class="w-100 readonly" rows="1" wrap="soft"></textarea></div>
             </div>
         </div>
     </div>
@@ -136,7 +134,6 @@
     </div>
 </div>
 				`
-				return content
 			});
 		}
 
@@ -155,13 +152,6 @@
 			const automodBoxColour = this.toRGBA(automodColourHex, 0.5)
 			const atPingBoxColour = this.toRGBA(atPingColourHex, 0.5)
 			const contextBoxColour = this.toRGBA(contextColourHex, 0.5)
-			let borderColour
-
-			if ("ui-tweaks" in IdlePixelPlus.plugins){
-				borderColour = IdlePixelPlus.plugins["ui-tweaks"].config["font-color-panels"]
-			} else {
-				borderColour = "black"
-			}
 
 			$("head").append(`
 					<style id="styles-modmod">
@@ -459,14 +449,14 @@
 			if(online===true) {
 				el.text("Online");
 				el.css("color", "limegreen");
-				if(statusBefore!="Online") {
+				if(statusBefore!=="Online") {
 					this.addModModChatMessage("Bot Status: Online", "L");
 				}
 			}
 			else if(online===false) {
 				el.text("Offline");
 				el.css("color", "#EE4B2B");
-				if(statusBefore!="Offline") {
+				if(statusBefore!=="Offline") {
 					this.addModModChatMessage("Bot Status: Offline", "L");
 					setTimeout(() => this.sendHello(false), 20000);
 				}
@@ -474,14 +464,13 @@
 			else {
 				el.text("Unknown");
 				el.css("color", "lightgrey");
-				if(statusBefore!="Unknown") {
+				if(statusBefore!=="Unknown") {
 					this.addModModChatMessage("Bot Status: Unknown", "L");
 				}
 			}
 		}
  
 		onLogin() {
-			const self = this;
 			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
 			onlineCount.before(`
 			<a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('modmod')" title="ModMod Panel">ModMod&nbsp;&nbsp;&nbsp;</a>
@@ -691,7 +680,7 @@
 		createNotification(){
 			const notificationString = `
 			<div id="modmodNotification" class="notification hover" onclick="IdlePixelPlus.setPanel('modmod')">
-        		<img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/diamond_hammer.png" class="w20">
+        		<img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/diamond_hammer.png" class="w20" alt="">
         		<span class="font-small color-yellow">ModMod</span>
     		</div>
 			`
