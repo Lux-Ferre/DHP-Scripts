@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.4.1
+// @version			2.4.2
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
 // @match			*://idle-pixel.com/login/play*
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require			https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
 // ==/UserScript==
  
 (function() {
@@ -270,19 +271,8 @@
 			const chatIn = $("#modmodChatIn")
 			const modmod_message = chatIn.val()
 			chatIn.val("")
-			const content = `MODMOD:MODCHAT:${modmod_message}`
 
-			const payload = {
-				content: content,
-				onResponse: function(player, content, callbackId) {
-					return true;
-				},
-				onOffline: function(player, content) {
-					console.log(content)
-				},
-				timeout: 2000 // callback expires after 2 seconds
-			}
-			IdlePixelPlus.sendCustomMessage(bot, payload)
+			Customs.sendBasicCustom(bot, "MODMOD", "MODCHAT", modmod_message)
 		}
  
 		addModModChatMessage(message, messageType) {
@@ -438,9 +428,8 @@
  
 		sendHello(login) {
 			const bot = this.getConfig("bot");
-			IdlePixelPlus.sendCustomMessage(bot, {
-				content: `MODMOD:HELLO:${login?1:0}:0`
-			});
+
+			Customs.sendBasicCustom(bot, "MODMOD", "HELLO", `${login?1:0}:0`)
 		}
  
 		setBotOnlineStatus(online) {
@@ -584,19 +573,8 @@
 
 		broadcastContextAction(action){
 			const bot = this.getConfig("bot")
-			const content = `MODMOD:context:${action}`
 
-			const payload = {
-				content: content,
-				onResponse: function(player, content, callbackId) {
-					return true;
-					},
-				onOffline: function(player, content) {
-					console.log(content)
-				},
-				timeout: 2000 // callback expires after 2 seconds
-			}
-			IdlePixelPlus.sendCustomMessage(bot, payload)
+			Customs.sendBasicCustom(bot, "MODMOD", "context", action)
 		}
  
 		contextQuickMute(username) {
@@ -638,7 +616,7 @@
 		}
  
 		onCustomMessageReceived(player, content, callbackId) {
-			const customData = this.parseCustom(player, content, callbackId)
+			const customData = Customs.parseCustom(player, content, callbackId)
 			const bot = this.getConfig("bot");
 			if(bot === player) {
 				this.setBotOnlineStatus(true);
@@ -653,28 +631,6 @@
 			if(bot === player) {
 				this.setBotOnlineStatus(false);
 			}
-		}
-
-		parseCustom(player, content, callbackId){
-			const customData = {
-				player: player,
-				callbackId: callbackId,
-				anwinFormatted: false
-			}
-			const splitPayload = content.split(":")
-			if(splitPayload.length >= 3){
-				customData.anwinFormatted = true
-				customData.plugin = splitPayload[0]
-				customData.command = splitPayload[1]
-				customData.payload = splitPayload.slice(2).join(":")
-			} else {
-				customData.anwinFormatted = false
-				customData.plugin = "unknown"
-				customData.command = "unknown"
-				customData.payload = content
-			}
-
-			return customData
 		}
 
 		createNotification(){
