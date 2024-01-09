@@ -104,7 +104,7 @@ Note: These are implemented using ``<code>`` and ``<strong>`` HTML elements so w
 A script which replaces the word "Clammy" with a random 2-part nickname starting with "C" and rhyming with "Rock" in your chat messages when you click "Send". This is a joke based on how often CammyRock's username is misspelled.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Customs Framework Plugin
 ###### Filename: *customs-plugin.js*
@@ -153,7 +153,7 @@ This method will create an IP+ custom object and pass it on to ``IdlePixelPlus.s
 If the advanced features of ``IdlePixelPlus.sendCustomMessage()`` are needed (ie callback functions), that method will have to be called directly instead.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Easter 2023 Tracker
 ###### Filename: *easter-2023.js*
@@ -162,7 +162,7 @@ If the advanced features of ``IdlePixelPlus.sendCustomMessage()`` are needed (ie
 This script adds a panel for tracking which eggs you have crafted for the Easter 2023 event, making it easier to know which you have left to try. Additionally, it has audio and popup notifications for the bunny used to trigger the event so you don't miss it while looking at another tab/window.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Config Backup
 ###### Filename: *idlepixelplus-backup.js*
@@ -173,7 +173,7 @@ Provides a panel based UI giving access to the Idle-Pixel Plus plugin configs. D
 The Greasy Fork page contains a table of UI-Tweaks themes including pastebin links with to apply them via this script.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Kaat Client
 ###### Filename: *kaat-client.js*
@@ -186,7 +186,7 @@ The main part provides realtime visuals on the state of the pet with progress ba
 The hidden part allows the host to update the pet's configs.
 
 #### IP+ Configs:
-- None
+ - None
 
 
 ## Kaat Host
@@ -198,10 +198,10 @@ Tamagotchi style community game. It has 3 primary stats and 1 secondary stat whi
 Most values and reply strings are stored in localstorage to be edited via the Kaat Client companion script.
 
 #### IP+ Configs:
-- kaatAccount: string
-- Name of the account to be running the game.
-- blacklist: string
-- Comma separated list of accounts to ignore chat commands from.
+ - kaatAccount: string
+	 - Name of the account to be running the game.
+ - blacklist: string
+	 - Comma separated list of accounts to ignore chat commands from.
 
 
 ## Websocket Message Sender
@@ -211,75 +211,114 @@ Most values and reply strings are stored in localstorage to be edited via the Ka
 A simple UI wrapper for sending websocket messages.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## ModMod Fork
 ###### Filename: *modmod.js*
 
 #### Description
-A fork of Anwinity's ModMod moderation tool.
-- Updated to interact with [LuxBot](https://github.com/Lux-Ferre/IdlePixel-Bot)
-- Custom panel added to house the modchat and online mod list
+Forked from Anwinity's ModMod moderation tool.
+Advanced features require LuxBot communication.
+
+Adds a context menu for chat, allowing for quick access to moderation tools (original feature). Adds a panel which contains most other features.
+ - Lists online mods (accounts running this script)
+ - Has quick links to off-game moderation tools
+ - Has a chat box with toggleable alerts:
+	 - Login events (for accounts running this script)
+	 - Automatic moderation actions taken by one of the bots
+	 - @mods mentions in main chat
+	 - Moderation actions taken via the context menu
+
+#### IP+ Configs:
+ - bot: string
+	 - Account name running the bot for advanced features
+- modstuffPlayerIDURL: string
+	- URL for .csv containing ID>username map
+- modstuffUsername: string
+	- Username to access map
+- modstuffPassword: string
+	- Password to access map
+- loginColour: colour picker
+	- Background colour for login events in mod chat
+- automodColour
+	- Background colour for automod events in mod chat
+- atPingColour
+	- Background colour for @mod pings in mod chat
+- contextColour
+	- Background colour for context menu events in mod chat
 
 ## Bait Thrower
 ###### Filename: *multi-bait.js*
 
 #### Description
-
+Replaces the vanilla popup for using bait with one that allows throwing multiples. All the loot from the batch is collated into a single popup.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## No More No Arrows
 ###### Filename: *no-no-arrows.js*
 
 #### Description
-
+Simple script that suppresses the toast alerting the player that they are attempting to use a bow with no arrows.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Notes Panel
 ###### Filename: *note-panel.js*
 
 #### Description
-
+Adds a panel for keeping notes. Notes are saved in localStorage
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Overview
 ###### Filename: *overview.js*
 
 #### Description
-
+Adds a new panel containing most game functions in one place. Panel is fully responsive (via Bootstrap) and modular, with the number of panels per row customizable by the player.
 
 #### IP+ Configs:
-- None
+ - colNum: int
+	 - Number of modules per row
+- farmingEnabled
+- gatheringEnabled
+- mineralsEnabled
+- woodcuttingEnabled
+- smeltingEnabled
+- cookingEnabled
+- brewingEnabled
+- fishingEnabled
+- machineryEnabled
+	- Toggles for related modules.
 
 ## Pinger
 ###### Filename: *pinger.js*
 
 #### Description
-
+Joke script that adds a chat command ``/ping <player>``.
+The player is then given an alert that they have been pinged.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Database Link Remover
 ###### Filename: *remove-links.js*
 
 #### Description
-
+Simple script which suppresses the feature that turns chat keywords into links. These links are useful for new players but mostly just clutter in chat for experienced players.
+Note: This purely client side so will only suppressed the links being created for the player with the script.
 
 #### IP+ Configs:
-- None
+ - None
 
 ## Loot Popup Suppressor
 ###### Filename: *remove-loot.js*
 
 #### Description
-
+With the addition of the loot log, popups are no longer required to show players what they have gained. This script overrides the vanilla loot handling method with one that retains the loot logging feature while removing the popup.
 
 #### IP+ Configs:
 - None
@@ -291,14 +330,16 @@ A fork of Anwinity's ModMod moderation tool.
 Randomly changes your chat sigil after every message.
 
 #### IP+ Configs:
-- Enabled: Boolean
-- Active account list: Comma separated string
+- activeNames: string
+- Comma separated list of accounts to use the randomizer on.
+- randomizerEnabled: boolean
+- Toggle to enable/disable the randomization.
 
 ## Spider Taunt
 ###### Filename: *spiderTaunt.js*
 
 #### Description
-
+Joke script that taunts players who die to a spider in 1-life hardcore mode. This is facilitated by LuxBot which is tracking player death statistics and will send a custom message containing the current spider kill count each time there is a kill.
 
 #### IP+ Configs:
 - None
@@ -307,39 +348,52 @@ Randomly changes your chat sigil after every message.
 ###### Filename: *template.js*
 
 #### Description
-
+Dev tool. This is the empty frame of an IP+ plugin containing all the on event methods handled by IP+. Additionally, it uses ``@require`` to use the [custom message handling framework extension](#customs-framework-plugin).
 
 #### IP+ Configs:
-- None
+- A blank config is present as an example.
 
 ## Armour Uncrafter
 ###### Filename: *uncrafter.js*
 
 #### Description
-Adds a right-click option to your needle that mass uncrafts all armour.
+Adds a right-click option to the needle that mass uncrafts all armour.
 
 #### IP+ Configs:
-- Keep one set of bat: Boolean
-- Keep one set of lizard: Boolean
-- Keep one set of bear: Boolean
-- Keep one set of reaper: Boolean
-- Keep one set of croc: Boolean
+- keepBat: boolean
+- keepLizard: boolean
+- keepBear: boolean
+- keepReaper: boolean
+- keepCroc: boolean
+- Toggles for whether or not to keep a single piece of each piece of the relevant armour set.
 
 
 ## Chat Highlighter
 ###### Filename: *word-highlighting.js*
 
 #### Description
-Highlights chat messages based on the user sending the message and/or a list of trigger words.
+Highlights and notifies the user if trigger words are used in chat. Can also highlight messages from specified users.
 
 #### IP+ Configs:
-- Trigger words: Comma separated string
-- Ignore words: Comma separated string
-- Sounds enabled: Boolean
-- Case sensitivity: Boolean
-- Popups enabled: Boolean
-- Allow spaces: Boolean
-- Notification username: String
-- Username highlighting: Comma separated string
-- Word highlight colour: Colour picker
-- Username highlighting colour: Colour picker
+- wordList: string
+- Comma separated list of words to trigger the highlighting.
+- ignoreWordList: string
+- Comma separated words which, if present, will suppress highlighting.
+- ignoreNameList: string
+- Comma separated list of people to suppress highlighting from.
+- soundsEnabled: boolean
+- Toggle to enable/disable audio notifications.
+- ignoreCase: boolean
+- Toggle to enable/disable case sensitivity in trigger words.
+- notificationsEnabled: boolean
+- Toggle to enable/disable popup notifications.
+- considerSpaces: boolean
+- Toggle to enable/disable spaces in trigger words.
+- activeName: string
+- Account which will broadcast notifications.
+- friendList: string
+- Comma separated list of account names to highlight messages from.
+- colourWordHighlight: colour picker
+- Background colour of trigger word highlighted messages.
+- colourFriendHighlight: colour picker
+- Background colour of messages highlighted for the username.
