@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel+ Overview Panel
 // @namespace		lbtechnology.info
-// @version 		1.3.1
+// @version 		1.4.0
 // @description		Single panel to control many skills
 // @author			Lux-Ferre
 // @license			MIT
@@ -84,10 +84,17 @@
 						label: "machineryEnabled",
 						type: "boolean",
 						default: false
+					},
+					{
+						id: "hiddenItems",
+						label: "Do not edit manually. Use GUI.",
+						type: "string",
+						default: ""
 					}
 				]
 			});
 			this.previous = "";
+			this.hiddenConfigActive = false;
 		}
 
 		onConfigsChanged() {
@@ -95,6 +102,9 @@
 		}
 
 		onLogin() {
+			window["var_show_item"] = 1		// For overriding Smitty's itembox hiding
+			this.loadHiddenItems()
+
 			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
 			onlineCount.before(`
 				<a href="#" class="hover float-end link-no-decoration"
@@ -199,6 +209,7 @@
 			for (const [containerId, itemData] of Object.entries(standardItemBoxes)) {
 				this.addStandardItemsToPanel(containerId, itemData)
 			}
+			this.hideHiddenItems()
 		}
 
 		onMessageReceived(data) {
@@ -238,12 +249,32 @@
 						border-radius: 2px;
 						border: 1px dotted ${borderColour};
 					}
+					.overviewHiddenItem {
+						display: none;
+					}
+					.overviewConfigCover {
+						position: absolute;
+						width: 100px;
+						height: 100px;
+						border-radius: 5pt;
+					}
+					.overviewHiddenCover {
+						z-index: -1;
+					}
+					.overviewConfigShown {
+						background-color: rgba(0, 200, 0, 25%);
+					}
+					.overviewConfigHidden {
+						background-color: rgba(200, 0, 0, 25%);
+					}
 				</style>
 			`)
 		}
 
 		createPanel(){
-			IdlePixelPlus.addPanel("overview", "Overview", function() {
+			const title = `<span>Overview</span><span><button type="button" class="btn btn-outline-primary" style="margin-left: 2%;" onclick="IdlePixelPlus.plugins['overview'].toggleHideConfig()">Hide Items</button></span>`
+
+			IdlePixelPlus.addPanel("overview", title, function() {
 			const content = `
 	<div id="overviewTopLevelRow" class="row row-cols-3 d-flex flex-wrap">
 	    <div id="overviewFarmingModule" class="col overviewSkillModule">
@@ -411,8 +442,9 @@
 			const itemRightClick = itemData.onContextMenu
 
 			itemList.forEach((itemType) => {
-				const itemElementString = `<div class="col d-flex justify-content-center">
-																<itembox data-item="playtime" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" onContextMenu="${itemRightClick}" class="shadow hover">
+				const itemElementString = `<div class="col d-flex justify-content-center overviewItemBoxContainer">
+																<div class="overviewConfigCover overviewHiddenCover" ov-data-item="${itemType}" onclick="IdlePixelPlus.plugins['overview'].toggleCover(this)"></div>
+																<itembox data-item="show_item" ov-data-item="${itemType}" id="overview-itembox-${itemType}" onclick="${itemOnClick}" onContextMenu="${itemRightClick}" class="shadow hover">
 																	<div class="center mt-1"><img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/${itemType}.png" title="${itemType}"></div>
 																	<div class="center mt-2"> <item-display data-format="number" data-key="${itemType}"></item-display></div>
 																</itembox>
@@ -488,7 +520,7 @@
 		addMeteorsToPanel(){
 			const meteorString = `
 				<div class="col d-flex justify-content-center">
-					<itembox data-item="playtime" ov-data-item="meteor" class="shadow hover itembox-resource-mining-1"
+					<itembox data-item="show_item" ov-data-item="meteor" class="shadow hover itembox-resource-mining-1"
 	 				  onclick="Modals.open_image_modal('METEOR', 'images/meteor.png', 'Mine the material from the meteor?', 'Mine it!', 'Close', 'MINE_METEOR')"
 					  oncontextmenu="websocket.send('MINE_METEOR')"
 					>
@@ -504,7 +536,7 @@
 		addBonemealbinToPanel(){
 			const binString = `
 			<div class="col d-flex justify-content-center">
-				<itembox data-item="playtime" ov-data-item="bonemeal_bin" class="shadow hover bone-item-box">
+				<itembox data-item="show_item" ov-data-item="bonemeal_bin" class="shadow hover bone-item-box">
 					<div class="center mt-1"><img draggable="false" src="https://d1xsc8x7nc5q8t.cloudfront.net/images/bonemeal_bin.png" title="bonemeal_bin"></div>
 					<div class="center mt-2"> <img src="https://d1xsc8x7nc5q8t.cloudfront.net/images/bonemeal_icon.png"> <item-display data-format="number" data-key="bonemeal">0</item-display></div>
 				</itembox>
@@ -812,6 +844,84 @@
 
 			$(`#${newAreaId}`).addClass("overviewGatheringBoxSelected")
 			this.selectedGatheringArea = newAreaId
+		}
+
+		toggleHideConfig(){
+			if (this.hiddenConfigActive){
+				this.exitHideConfig()
+			} else {
+				this.enterHideConfig()
+			}
+
+			this.hiddenConfigActive = !this.hiddenConfigActive
+		}
+
+		loadHiddenItems(){
+			const itemListString = this.getConfig("hiddenItems")
+			const itemList = itemListString.split(",")
+
+			if (itemList[0]===""){itemList.shift()}
+
+			this.hiddenItems = itemList
+		}
+
+		saveHiddenItems(){
+			IdlePixelPlus.refreshPanel("idlepixelplus")
+			$(`#idlepixelplus-config-overview-hiddenItems`).val(this.hiddenItems.toString())
+			IdlePixelPlus.savePluginConfigs("overview")
+		}
+
+		toggleCover(cover){
+			const item = cover.getAttribute('ov-data-item')
+
+			if(this.hiddenItems.includes(item)){
+				this.hiddenItems.splice(this.hiddenItems.indexOf(item), 1)
+				cover.classList.add("overviewConfigShown")
+				cover.classList.remove("overviewConfigHidden")
+			} else {
+				this.hiddenItems.push(item)
+				cover.classList.remove("overviewConfigShown")
+				cover.classList.add("overviewConfigHidden")
+
+			}
+		}
+
+		enterHideConfig(){
+			const overviewPanel = $("#overviewTopLevelRow")
+			const allItemContainers = $(".overviewItemBoxContainer", overviewPanel)
+			const allItemCovers = $(".overviewConfigCover", overviewPanel)
+
+			allItemContainers.removeClass("overviewHiddenItem")
+			allItemContainers.addClass("d-flex")
+			allItemCovers.removeClass("overviewHiddenCover")
+			allItemCovers.addClass("overviewConfigShown")
+
+			this.hiddenItems.forEach(item => {
+				const itemContainer = $(`itembox[ov-data-item=${item}]`).parent()
+				const cover = $(".overviewConfigCover", itemContainer)
+				cover.removeClass("overviewConfigShown")
+				cover.addClass("overviewConfigHidden")
+			})
+		}
+
+		exitHideConfig(){
+			const overviewPanel = $("#overviewTopLevelRow")
+			const allItemCovers = $(".overviewConfigCover", overviewPanel)
+
+			allItemCovers.addClass("overviewHiddenCover")
+
+			this.hideHiddenItems()
+			this.saveHiddenItems()
+		}
+
+		hideHiddenItems() {
+			const overviewPanel = $("#overviewTopLevelRow")
+
+			this.hiddenItems.forEach(item => {
+				const itemContainer = $(`itembox[ov-data-item=${item}]`).parent()
+				itemContainer.addClass("overviewHiddenItem")
+				itemContainer.removeClass("d-flex")
+			})
 		}
 	}
 
