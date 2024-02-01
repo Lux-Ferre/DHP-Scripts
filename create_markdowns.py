@@ -57,19 +57,23 @@ def generate_doc(plugin_filename: str):
             config_type = config.get("type", "None")
             config_label = config.get("label", "None")
             config_default = config.get("default", "None")
-            
+
             config_string = f" - {config_id}: {config_type}\n   - Label: {config_label}\n   - Default: {config_default}\n\n"
             configs_markdown += config_string
-            
+
         data_map["{% ipp_configs %}"] = configs_markdown
 
-    with open("markdown_template.md", "r") as f:
+    cwd = os.getcwd()
+
+    with open(f"{cwd}/markdown_template.md", "r") as f:
         template = f.read()
 
     for key, value in data_map.items():
         template = template.replace(key, f"{value}")
 
-    with open(f"markdown/{pathlib.Path(plugin_filename).name[:-3]}.md", "w", encoding="utf-8") as f:
+
+
+    with open(f"{cwd}/markdown/{pathlib.Path(plugin_filename).name[:-3]}.md", "w", encoding="utf-8") as f:
         f.write(template)
 
 
@@ -80,8 +84,9 @@ def get_plugin_info(plugin_filename: str) -> dict:
         "description": None,
         "authors": None,
     }
-    
-    with open(plugin_filename, "r", encoding="utf-8") as js_file:
+    cwd = os.getcwd()
+
+    with open(cwd+plugin_filename, "r", encoding="utf-8") as js_file:
         for line in js_file:
             if "@name" in line and "@namespace" not in line:
                 info_set["name"] = " ".join(line.split()[2:])
@@ -99,7 +104,8 @@ def get_plugin_configs(plugin_name: str) -> list[dict]|None:
     """
     Specialized parser for pulling IP+ configs from js files.
     """
-    with open(plugin_name, "r", encoding="utf-8") as js_file:
+    cwd = os.getcwd()
+    with open(cwd+plugin_name, "r", encoding="utf-8") as js_file:
         data = js_file.read().strip()
         
     try:
