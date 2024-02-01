@@ -9,4 +9,8 @@ jobs:
         with:
           python-version: '3.10'
       - name: Run script
-        run: python create_markdowns.py 
+        run: |
+          python create_markdowns.py 
+          git add .
+          git commit -m "automatic markdowns generated"
+          git push
