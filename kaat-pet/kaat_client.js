@@ -29,7 +29,7 @@
                         type: "string",
                         max: 20,
                         default: "ᓚᘏᗢ"
-                    },
+                    }
                 ]
             });
             this.previous = "";

@@ -25,7 +25,7 @@
 				config: [
 					{
 						label: `<div class="d-flex w-100"><span class="align-self-center col-6">Allowed Popups</span><span class="col-6"><button class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.noloot.showModal(&quot;noloot&quot;, &quot;allowedPopups&quot;)">Edit List</button></span></div>`,
-						type: "label",
+						type: "label"
 					}
 				]
             });

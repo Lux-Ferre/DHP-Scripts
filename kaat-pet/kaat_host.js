@@ -36,7 +36,7 @@
                         type: "string",
                         max: 2000,
                         default: ""
-                    },
+                    }
                 ]
             });
             this.previous = "";
