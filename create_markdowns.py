@@ -84,9 +84,8 @@ def get_plugin_info(plugin_filename: str) -> dict:
         "description": None,
         "authors": None,
     }
-    cwd = os.getcwd()
-
-    with open(cwd+plugin_filename, "r", encoding="utf-8") as js_file:
+    
+    with open(plugin_filename, "r", encoding="utf-8") as js_file:
         for line in js_file:
             if "@name" in line and "@namespace" not in line:
                 info_set["name"] = " ".join(line.split()[2:])
@@ -104,8 +103,7 @@ def get_plugin_configs(plugin_name: str) -> list[dict]|None:
     """
     Specialized parser for pulling IP+ configs from js files.
     """
-    cwd = os.getcwd()
-    with open(cwd+plugin_name, "r", encoding="utf-8") as js_file:
+    with open(plugin_name, "r", encoding="utf-8") as js_file:
         data = js_file.read().strip()
         
     try:
