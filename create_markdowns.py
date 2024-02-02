@@ -158,7 +158,8 @@ def get_plugin_configs(plugin_name: str) -> list[dict]|None:
         .replace('max:', '"max":')\
         .replace('min:', '"min":')\
         .replace('step:', '"step:"')\
-        .replace('options:[', '"options":[')
+        .replace('options:', '"options":')\
+        .replace('value:', '"value":')
     
     while "`" in jsonified_configs:     # Escape backticked strings
         open_tick_index = jsonified_configs.index("`")
