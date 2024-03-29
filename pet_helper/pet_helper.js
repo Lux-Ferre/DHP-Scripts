@@ -40,7 +40,7 @@
 			if (!(customData.plugin === "pethelp" || customData.anwinFormatted)){      // Checks if custom is formatted in the correct way, and from the correct plugin
 				return
 			}
-			if (customData.player === "luxbotdev"){      // Checks if custom is received from the correct player
+			if (customData.player === "luxbot"){      // Checks if custom is received from the correct player
 				if (customData.command === "error"){     // Runs relevant command code, replace with switch statment if using many commands
 					this.addError(customData.payload)
 				} else if (customData.command === "success"){
@@ -103,7 +103,7 @@
 			const pet_url = $("#petHelperURLInput").val()
 			
 			const payload = `${pet_name};${pet_title};${pet_url}`
-			Customs.sendBasicCustom("luxbotdev", "pethelp", "add", payload)
+			Customs.sendBasicCustom("luxbot", "pethelp", "add", payload)
 		}
 	
 		addError(errorType){
