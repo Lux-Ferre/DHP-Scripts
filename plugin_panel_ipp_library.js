@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel+ Plugin Paneller
 // @namespace		lbtechnology.info
-// @version			1.0.0
+// @version			1.0.1
 // @description		Library which creates a modal for opening plugin panels.
 // @author			Lux-Ferre
 // @license			MIT
@@ -62,6 +62,9 @@
 					.panellerModalText {
 						margin-left: 20px;
 					}
+					#panellerModalDialogue {
+					    margin-top: 20vh;
+					}
 				</style>
 			`)
 		}
@@ -76,7 +79,7 @@
 		createModal(){
 				const modalString = `
 					<div id="panellerModal" class="modal fade" role="dialog" tabindex="-1"">
-						<div class="modal-dialog modal-dialog-centered" role="document">
+						<div id="panellerModalDialogue" class="modal-dialog" role="document">
 							<div id="panellerModalInner" class="modal-content panellerModalInner">
 								<div id="panellerModalHeader" class="modal-header text-center">
 									<h3 class="modal-title w-100"><u>Panel Selector</u></h3>
