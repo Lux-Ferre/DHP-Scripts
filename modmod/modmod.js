@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.4.2
+// @version			2.5.0
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -9,6 +9,7 @@
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // @require			https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
+// @require			https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
  
 (function() {
@@ -460,10 +461,7 @@
 		}
  
 		onLogin() {
-			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-			onlineCount.before(`
-			<a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('modmod')" title="ModMod Panel">ModMod&nbsp;&nbsp;&nbsp;</a>
-			`);
+			Paneller.registerPanel("modmod", "ModMod")
 			this.createPanel()
 			this.addStyles()
  

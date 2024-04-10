@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel Notes Panel
 // @namespace    lbtechnology.info
-// @version      1.1.0
+// @version      1.2.0
 // @description  Adds a panel for storing semi-persistant notes
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
 
 (function() {
@@ -26,7 +27,7 @@
             this.previous = "";
         }
 
-    createPanel(){
+    	createPanel(){
             IdlePixelPlus.addPanel("notes", "Notes", function() {
                 let content = `<div>`
                 content += `<br/>`
@@ -39,23 +40,22 @@
             });
         }
 
-    onLogin(){
-            const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-            onlineCount.before(`
-            <a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.plugins.notespanel.openNotesPanel()" title="Note Taking">Notes&nbsp;&nbsp;&nbsp;</a>
-            `);
+    	onLogin(){
             this.createPanel()
-        }
 
-    saveNotes(){
+			Paneller.registerPanel("notes", "Notes")
+    	}
+
+		onPanelChanged(panelBefore, panelAfter){
+			if (panelAfter==="notes"){
+				const notes = localStorage.getItem("IPNotes")
+				$("#notes_box").val(notes)
+			}
+		}
+
+    	saveNotes(){
             const currentNotes = $("#notes_box").val()
-        localStorage.setItem("IPNotes", currentNotes)
-        }
-
-    openNotesPanel(){
-            const notes = localStorage.getItem("IPNotes")
-        $("#notes_box").val(notes)
-        IdlePixelPlus.setPanel('notes')
+        	localStorage.setItem("IPNotes", currentNotes)
         }
     }
 

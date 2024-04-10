@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel Custom Interactor
 // @namespace    lbtechnology.info
-// @version      2.2.0
+// @version      2.3.0
 // @description  Sends, receives, and displays CUSTOM websocket frames 
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
  
 (function() {
@@ -114,10 +115,6 @@
         }
 
         onLogin(){
-            const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-            onlineCount.before(`
-            <a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('interactor')" title="Custom Message Interactor">Custom&nbsp;&nbsp;&nbsp;</a>
-            `);
             this.createPanel()
             this.setConfigValuesToUI()
 
@@ -126,6 +123,7 @@
             } else {
                 this.applyTheme("default")
             }
+			Paneller.registerPanel("interactor", "Custom Interactor")
         }
 
         onConfigsChanged(){

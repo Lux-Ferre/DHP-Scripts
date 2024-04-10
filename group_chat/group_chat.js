@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel Group Chat
 // @namespace		lbtechnology.info
-// @version			2.0.0
+// @version			2.1.0
 // @description		A private group chat panel
 // @author			Lux-Ferre
 // @license			MIT
@@ -9,6 +9,7 @@
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // @require			https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
+// @require		 	https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
  
 (function() {
@@ -206,11 +207,8 @@
 		}
 	
 		onLogin() {
-			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-			onlineCount.before(`
-				<a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('groupchat')" title="Group Chat Panel">Group Chat&nbsp;&nbsp;&nbsp;</a>
-			`);
-			
+			Paneller.registerPanel("groupchat", "Group Chat")
+
 			this.loadData()
 			this.createPanel()
 			this.addStyles()

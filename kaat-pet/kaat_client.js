@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel Kaat Client
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Kaat account interaction panel
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
 
 (function() {
@@ -44,12 +45,7 @@
                 $("#controlTabButton").hide()
             }
     
-            const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-                onlineCount.before(`
-                    <a href="#" class="hover float-end link-no-decoration"
-                    onclick="event.preventDefault(); IdlePixelPlus.setPanel('kaat-client')"
-                    title="Nya~">Nya~&nbsp;&nbsp;&nbsp;</a>
-                `);
+			Paneller.registerPanel("kaat-client", "Kaat Client")
             }
 
         onCustomMessageReceived(player, content, callbackId) {

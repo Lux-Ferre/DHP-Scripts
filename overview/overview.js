@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name			IdlePixel+ Overview Panel
 // @namespace		lbtechnology.info
-// @version 		1.4.0
+// @version 		1.5.0
 // @description		Single panel to control many skills
 // @author			Lux-Ferre
 // @license			MIT
 // @match			*://idle-pixel.com/login/play*
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 	https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
 
 (function() {
@@ -105,13 +106,7 @@
 			window["var_show_item"] = 1		// For overriding Smitty's itembox hiding
 			this.loadHiddenItems()
 
-			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-			onlineCount.before(`
-				<a href="#" class="hover float-end link-no-decoration"
-					onclick="event.preventDefault(); IdlePixelPlus.setPanel('overview')"
-					title="Overview">Overview&nbsp;&nbsp;&nbsp;
-				</a>
-			`);
+			Paneller.registerPanel("overview", "Overview")
 
 			this.addStyles()
 			this.createPanel()

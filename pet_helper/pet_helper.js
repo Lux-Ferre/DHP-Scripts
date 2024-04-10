@@ -1,14 +1,15 @@
 // ==UserScript==
 // @name         Idle-Pixel Pet Helper
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.1.0
 // @description  Plugin for interacting with LuxBot's pet DB.
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
-// @grant        GM_xmlhttpRequest
+// @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
 // @require		 https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
+// @require		 https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
 
 (function() {
@@ -27,12 +28,8 @@
 		}
 
 		onLogin() {
-			const onlineCount = $(".top-bar .gold:not(#top-bar-admin-link)");
-			onlineCount.before(`
-				<a href="#" class="hover float-end link-no-decoration" onclick="event.preventDefault(); IdlePixelPlus.setPanel('pethelper')" title="Pet Helper Panel">Pets&nbsp;&nbsp;&nbsp;</a>
-			`);
-	
 			this.createPanel()
+			Paneller.registerPanel("pethelper", "Pet Link Adder")
 		}
 	
 		onCustomMessageReceived(player, content, callbackId) {
@@ -117,17 +114,6 @@
 			$("#petHelperNameInput").val("")
 			$("#petHelperTitleInput").val("")
 			$("#petHelperURLInput").val("")
-		}
-	
-		getOGThumbnail(){
-			GM_xmlHttpRequest({
-				url: "https://prnt.sc/IoTU5g6RbGZY",
-				method: "HEAD",
-				headers: {'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; Win64; x64)'},
-				onload: response => {
-					console.log(response.responseHeaders);
-				}
-			})
 		}
 	}
 
