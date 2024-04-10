@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name			IdlePixel+ Overview Panel
 // @namespace		lbtechnology.info
-// @version 		1.5.0
+// @version 		1.5.1
 // @description		Single panel to control many skills
 // @author			Lux-Ferre
 // @license			MIT
 // @match			*://idle-pixel.com/login/play*
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require		 	https://update.greasyfork.org/scripts/491983/1356692/IdlePixel%2B%20Plugin%20Paneller.js
+// @require		 	https://greasyfork.org/en/scripts/491983-idlepixel-plugin-paneller/code/IdlePixel%2B%20Plugin%20Paneller.js
 // ==/UserScript==
 
 (function() {
