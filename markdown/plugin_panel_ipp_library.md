@@ -1,8 +1,8 @@
-<h1 align="center">IdlePixel Group Chat</h1>
+<h1 align="center">IdlePixel+ Plugin Paneller</h1>
 
 <h3 align="center"> Description</h3>
 
-A private group chat panel
+Library which creates a modal for opening plugin panels.
 
 <h3 align="center"> Screenshots</h3>
 
@@ -14,6 +14,6 @@ None
 
 <h3 align="center"> Meta-data</h3>
 
- - Filename: group_chat.js
- - Version: 2.1.1
+ - Filename: plugin_panel_ipp_library.js
+ - Version: 1.0.1
  - Authors: Lux-Ferre

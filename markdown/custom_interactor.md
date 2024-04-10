@@ -39,5 +39,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: custom_interactor.js
- - Version: 2.2.0
+ - Version: 2.3.1
  - Authors: Lux-Ferre

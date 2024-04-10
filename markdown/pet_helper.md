@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: pet_helper.js
- - Version: 1.0.0
+ - Version: 1.1.1
  - Authors: Lux-Ferre
