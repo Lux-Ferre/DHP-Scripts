@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.6.0
+// @version			2.6.1
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -608,7 +608,7 @@
 			const reason = $("#modmodMuteModalReason").val()
 			const isIP = $("#modmodMuteModalIP").is(':checked')
 
-			IdlePixelPlus.sendMessage(`MUTE=${target}~${hours}~${reason}~${isIP}`);
+			IdlePixelPlus.sendMessage(`MUTE=${target}~${hours}~${reason}~${isIP? "1":"0"}`);
 
 			const action = `${window["var_username"]} muted ${target} || T: ${hours} h || R: ${reason} || IP: ${isIP}`
 			this.broadcastContextAction(action);
