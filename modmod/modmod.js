@@ -91,6 +91,34 @@
 			const b = parseInt(hex.slice(5, 7), 16);
 			return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 		}
+
+		prettyTime(_hours){
+			let hours = _hours
+			let days = 0
+			let months = 0
+			let years = 0
+
+			if (hours > 24){
+				days = Math.floor(hours/24)
+				hours = hours % 24
+			}
+
+			if (days>365){
+				years = Math.floor(days/365)
+				days = days % 365
+			}
+
+			if (days>30){
+				months = Math.floor(days/30)
+				days = days % 30
+			}
+
+			const yearsText = years? `${years} y, `:``
+			const monthsText = months? `${months} m, `:``
+			const daysText = days? `${days} d, `:``
+
+			return `${yearsText}${monthsText}${daysText}${hours} h`
+		}
  
 		createPanel(){
 			IdlePixelPlus.addPanel("modmod", "ModMod Panel", function() {
@@ -610,7 +638,7 @@
 
 			IdlePixelPlus.sendMessage(`MUTE=${target}~${hours}~${reason}~${isIP? "1":"0"}`);
 
-			const action = `${window["var_username"]} muted ${target} || T: ${hours} h || R: ${reason} || IP: ${isIP}`
+			const action = `${window["var_username"]} muted ${target} || T: ${this.prettyTime(parseInt(hours))} || R: ${reason} || IP: ${isIP}`
 			this.broadcastContextAction(action);
 			$("#modmodMuteModal").modal("hide")
 		}
