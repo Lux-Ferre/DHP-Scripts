@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.6.1
+// @version			2.6.2
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
