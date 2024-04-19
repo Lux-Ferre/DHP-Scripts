@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
 // @namespace		lbtechnology.info
-// @version			2.5.1
+// @version			2.6.0
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
@@ -490,6 +490,7 @@
 			}
 
 			this.createNotification()
+			this.createMuteModal()
 		}
 
 		onPanelChanged(panelBefore, panelAfter){
@@ -593,13 +594,25 @@
 			return false;
 		}
  
-		contextMute(username) {
+		contextMute(target) {
 			// CHAT=/smute anwinity
-			IdlePixelPlus.sendMessage(`CHAT=/smute ${username}`);
+			$("#modmodMuteModalUsername").val(target)
+			$("#modmodMuteModal").modal("show")
 			$("#modmod-chat-context-menu").hide();
-			const action = `${window["var_username"]} muted ${username}`
-			this.broadcastContextAction(action)
 			return false;
+		}
+
+		modalMute(){
+			const target = $("#modmodMuteModalUsername").val()
+			const hours = $("#modmodMuteModalLength").val()
+			const reason = $("#modmodMuteModalReason").val()
+			const isIP = $("#modmodMuteModalIP").is(':checked')
+
+			IdlePixelPlus.sendMessage(`MUTE=${target}~${hours}~${reason}~${isIP}`);
+
+			const action = `${window["var_username"]} muted ${target} || T: ${hours} h || R: ${reason} || IP: ${isIP}`
+			this.broadcastContextAction(action);
+			$("#modmodMuteModal").modal("hide")
 		}
  
 		contextWhoIs(username) {
@@ -664,6 +677,44 @@
 				$("#modmodNotification").show()
 			}
 
+		}
+
+		createMuteModal(){
+			const modalString = `
+				<div id="modmodMuteModal" class="modal fade" role="dialog" tabindex="-1">
+				    <div class="modal-dialog" role="document">
+				        <div class="modal-content">
+				            <div class="modal-header">
+				                <h4 class="modal-title">Mute Player</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
+				            </div>
+				            <div class="modal-body">
+				                <div class="container">
+				                    <div class="row">
+				                        <div class="col-3 d-flex justify-content-end align-items-center"><label class="col-form-label">Username</label></div>
+				                        <div class="col-9 d-flex align-items-center"><input id="modmodMuteModalUsername" class="w-100" type="text" /></div>
+				                    </div>
+				                    <div class="row">
+				                        <div class="col-3 d-flex justify-content-end align-items-center"><label class="col-form-label">Length</label></div>
+				                        <div class="col-9 d-flex align-items-center"><input id="modmodMuteModalLength" class="w-100" type="text" /></div>
+				                    </div>
+				                    <div class="row">
+				                        <div class="col-3 d-flex justify-content-end align-items-center"><label class="col-form-label">Reason</label></div>
+				                        <div class="col-9 d-flex align-items-center"><input id="modmodMuteModalReason" class="w-100" type="text" /></div>
+				                    </div>
+				                    <div class="row">
+				                        <div class="col-3 d-flex justify-content-end align-items-center"><label class="col-form-label">IP</label></div>
+				                        <div class="col-9 d-flex align-items-center"><input id="modmodMuteModalIP" type="checkbox" /></div>
+				                    </div>
+				                </div>
+				            </div>
+				            <div class="modal-footer"><button class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.ModMod.modalMute()">Mute</button><button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancel</button></div>
+				        </div>
+				    </div>
+				</div>
+			`
+
+			const modalElement = $.parseHTML(modalString)
+			$(document.body).append(modalElement)
 		}
  
 	}
