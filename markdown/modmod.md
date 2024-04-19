@@ -55,5 +55,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: modmod.js
- - Version: 2.6.0
+ - Version: 2.6.1
  - Authors: Anwinity & Lux-Ferre
