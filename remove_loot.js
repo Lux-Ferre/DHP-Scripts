@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Loot Popup Remover
 // @namespace    lbtechnology.info
-// @version      1.1.0
+// @version      1.1.1
 // @description  Stops vanilla loot popups, leaving only loot log
 // @author       Lux-Ferre
 // @license      MIT
@@ -43,7 +43,7 @@
             Modals.open_loot_dialogue = this.openLootDialogue;
         }
 	
-		openLootDialogue(loot_images_array, loot_labels_array, loot_background_color_array, extra_data){
+		openLootDialogue(loot_images_array, loot_labels_array, loot_background_color_array, extra_data, levelups_data){
 			const allowedSet = IdlePixelPlus.plugins.noloot.allowedPopups
 			let showModal = loot_labels_array.some(label => {
 				return [...allowedSet].some(filterItem => {
@@ -52,7 +52,7 @@
 			});
 			
 			if (showModal){
-				IdlePixelPlus.plugins.noloot.originalOpenLootDialogue(loot_images_array, loot_labels_array, loot_background_color_array, extra_data)
+				IdlePixelPlus.plugins.noloot.originalOpenLootDialogue(loot_images_array, loot_labels_array, loot_background_color_array, extra_data, levelups_data)
 				return;
 			}
 			
