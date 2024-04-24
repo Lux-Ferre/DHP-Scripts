@@ -19,5 +19,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: remove_loot.js
- - Version: 1.1.0
+ - Version: 1.1.1
  - Authors: Lux-Ferre
