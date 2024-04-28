@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: multi_bait_thrower.js
- - Version: 1.0.4
+ - Version: 1.0.5
  - Authors: Lux-Ferre
