@@ -98,17 +98,14 @@
         }
         
         parseItemData(values_array){
-            let items = {}
+            const items = {}
             
-            let image = ""
-            let number = ""
-            let label = ""
             let background = ""
                 
-            for(let i = 1; i < values_array.length; i+=0){
-                image = values_array[i];
+            for(let i = 2; i < values_array.length; i+=0){
+                const image = values_array[i];
                 i++;
-                [number, ...label] = values_array[i].split(" ");
+                let [number, ...label] = values_array[i].split(" ");
                 number = parseInt(number)
                 label = label.join(" ")
                 i++;
