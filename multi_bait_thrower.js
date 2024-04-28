@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel Bait Thrower
 // @namespace    lbtechnology.info
-// @version      1.0.4
+// @version      1.0.5
 // @description  Opens x amount of bait at once and collates the loot
 // @author       Lux-Ferre
 // @license      MIT
@@ -23,31 +23,29 @@
                     description: GM_info.script.description
                 },
             });
-            this.previous = "";
+			this.tracking_bait = false
+			this.total_bait_loots = 0
+			this.bait_counter = 0
+			this.bait_loot = {}
         }
 
         onLogin(){
-            var tracking_bait = false
-            var total_bait_loots = 0
-            var bait_counter = 0
-            var bait_loot = {}
-            
             $(`itembox[data-item="bait"]`).attr("onClick", "IdlePixelPlus.plugins.baitplugin.open_input_dialogue('BAIT')")
             $(`itembox[data-item="super_bait"]`).attr("onClick", "IdlePixelPlus.plugins.baitplugin.open_input_dialogue('SUPER_BAIT')")
             $(`itembox[data-item="mega_bait"]`).attr("onClick", "IdlePixelPlus.plugins.baitplugin.open_input_dialogue('MEGA_BAIT')")
         }
         
         onMessageReceived(data){
-            if(window.tracking_bait && data.startsWith("OPEN_LOOT_DIALOGUE")){
+            if(this.tracking_bait && data.startsWith("OPEN_LOOT_DIALOGUE")){
                 const values = data.split("=")[1]
                 const values_array = values.split("~")
                     
                 const items = this.parseItemData(values_array)
-                window.bait_loot = this.addToLoot(window.bait_loot, items)
+                this.bait_loot = this.addToLoot(this.bait_loot, items)
                     
-                window.bait_counter++;
-                if (window.bait_counter>=window.total_bait_loots){
-                    window.tracking_bait = false
+                this.bait_counter++;
+                if (this.bait_counter>=this.total_bait_loots){
+                    this.tracking_bait = false
                     this.createLootPopup()
                 }
             }
@@ -69,19 +67,19 @@
         }
     
         throwBait(bait_type, num){
-            window.bait_counter = 0;
-            window.bait_loot = {}
-            window.tracking_bait = true
+            this.bait_counter = 0;
+            this.bait_loot = {}
+            this.tracking_bait = true
 
             const currentBait = window[`var_${bait_type.toLowerCase()}`]
 
             if(num > currentBait){
-                window.total_bait_loots = currentBait
+                this.total_bait_loots = currentBait
             } else {
-                window.total_bait_loots = num
+                this.total_bait_loots = num
             }
     
-            for (let i = 0; i < window.total_bait_loots; i++) {
+            for (let i = 0; i < this.total_bait_loots; i++) {
                 websocket.send(`THROW_${bait_type}`);
             }
         }
@@ -124,7 +122,7 @@
             const images = [];
             const labels = [];
             const background = [];
-            for (let [itemName, value] of Object.entries(window.bait_loot)){
+            for (let [itemName, value] of Object.entries(this.bait_loot)){
                 images.push(itemName);
                 const newLabel = `${value.number} ${value.label}`
                 labels.push(newLabel);
