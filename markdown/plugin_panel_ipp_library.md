@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: plugin_panel_ipp_library.js
- - Version: 1.0.1
+ - Version: 1.1.0
  - Authors: Lux-Ferre
