@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name			IdlePixel+ Plugin Paneller
 // @namespace		lbtechnology.info
-// @version			1.0.1
+// @version			1.1.0
 // @description		Library which creates a modal for opening plugin panels.
 // @author			Lux-Ferre
 // @license			MIT
@@ -69,10 +69,11 @@
 			`)
 		}
 	
-		registerPanel(panelName, displayName){
+		registerPanel(panelName, displayName, target="panel"){
 			this.registered_panels.push({
 				name: panelName,
-				display: displayName
+				display: displayName,
+				target: target
 			})
 		}
 	
@@ -135,7 +136,16 @@
 		}
 	
 		switchPanel(panelName){
-			IdlePixelPlus.setPanel(panelName)
+			this.registered_panels.forEach(panel=>{
+				if(panel.name===panelName){
+					if(panel.target==="panel"){
+						IdlePixelPlus.setPanel(panelName)
+					} else {
+						panel.target.apply()
+					}
+				}
+			})
+
 			$('#panellerModal').modal('hide')
 		}
 	}
