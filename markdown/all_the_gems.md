@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: all_the_gems.js
- - Version: 1.0.0
+ - Version: 1.0.1
  - Authors: Lux-Ferre
