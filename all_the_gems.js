@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel All the Gems!
 // @namespace    lbtechnology.info
-// @version      1.0.0
+// @version      1.0.1
 // @description  Opens all gem goblin bags with right click
 // @author       Lux-Ferre
 // @license      MIT
@@ -80,31 +80,27 @@
             return totalLoot
         }
         
-        parseItemData(values_array){
-            let items = {}
-            
-            let image = ""
-            let number = ""
-            let label = ""
-            let background = ""
-                
-            for(let i = 1; i < values_array.length; i+=0){
-                image = values_array[i];
-                i++;
-                [number, ...label] = values_array[i].split(" ");
-                number = parseInt(number)
-                label = label.join(" ")
-                i++;
-                background = values_array[i];
-                i++;
-                items[image] = {
-                    number: number,
-                    label: label,
-                    background: background
-                }
-            }
-                return items
-            }
+		parseItemData(values_array){
+			const items = {}
+
+			for(let i = 2; i < values_array.length; i+=0){
+				const image = values_array[i];
+				i++;
+				let [number, ...label] = values_array[i].split(" ");
+				number = parseInt(number)
+				label = label.join(" ")
+				i++;
+				const background = values_array[i];
+				i++;
+				items[image] = {
+					number: number,
+					label: label,
+					background: background
+				}
+			}
+
+			return items
+		}
     
         createLootPopup(){
             const images = [];
