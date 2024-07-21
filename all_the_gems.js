@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel All the Gems!
 // @namespace    lbtechnology.info
-// @version      1.0.1
+// @version      1.0.2
 // @description  Opens all gem goblin bags with right click
 // @author       Lux-Ferre
 // @license      MIT
@@ -17,13 +17,12 @@
         constructor() {
             super("gembagplugin", {
                 about: {
-                    name: GM_info.script.name,
+                    name: `${GM_info.script.name} (ver: ${GM_info.script.version})`,
                     version: GM_info.script.version,
                     author: GM_info.script.author,
                     description: GM_info.script.description
                 },
-            });
-            this.previous = "";
+            })
         }
 
         onLogin(){
