@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name			IdlePixel ModMod (Lux-Ferre Fork)
-// @namespace		lbtechnology.info
-// @version			2.6.2
+// @namespace		luxferre.dev
+// @version			2.6.3
 // @description		DHP Mod for Mods. ModMod. ModModMod. Mod.
 // @author			Anwinity & Lux-Ferre
 // @license			MIT
 // @match			*://idle-pixel.com/login/play*
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require			https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
+// @require			https://greasyfork.org/scripts/484046/code/IdlePixel%2B%20Custom%20Handling.js?anticache=20240721
 // @require			https://greasyfork.org/scripts/491983-idlepixel-plugin-paneller/code/IdlePixel%2B%20Plugin%20Paneller.js?anticache=20240410
 // ==/UserScript==
  

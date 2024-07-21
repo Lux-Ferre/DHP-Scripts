@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel+ Plugin Template
-// @namespace    lbtechnology.info
-// @version      1.2.0
+// @namespace    luxferre.dev
+// @version      1.2.1
 // @description  Blank plugin with all IP+ methods, and custom message handling
 // @author       Lux-Ferre
 // @license      MIT
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require		 https://update.greasyfork.org/scripts/484046/1307183/IdlePixel%2B%20Custom%20Handling.js
+// @require		 https://greasyfork.org/scripts/484046/code/IdlePixel%2B%20Custom%20Handling.js?anticache=20240721
 // ==/UserScript==
 
 (function() {
