@@ -1,3 +1,7 @@
 /chat-bot.js
 /markdown/*
 /assets/libraries/*
+
+teams_discord_bot.js
+teams_notifier.js
+yoink.js
