@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: group_chat.js
- - Version: 2.1.1
+ - Version: 2.1.2
  - Authors: Lux-Ferre

@@ -19,5 +19,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: template.js
- - Version: 1.2.0
+ - Version: 1.2.1
  - Authors: Lux-Ferre
