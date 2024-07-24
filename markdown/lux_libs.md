@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: lux_libs.js
- - Version: 1.0.0
+ - Version: 1.0.1
  - Authors: Lux-Ferre

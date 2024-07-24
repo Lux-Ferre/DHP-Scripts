@@ -15,5 +15,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: teams_storage_library.js
- - Version: 1.1.0
+ - Version: 1.2.0
  - Authors: Lux-Ferre
