@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Idle-Pixel Teams Storage Manager
 // @namespace    luxferre.dev
-// @version      1.2.0
+// @version      1.2.1
 // @description  Library for parsing teams storage data.
 // @author       Lux-Ferre
 // @license      MIT
@@ -55,6 +55,7 @@
 		onMessageReceived(message) {
 			if(TStore.item_list.length === 0 && message.startsWith("TEAMS_TRADABLES_MODAL")){
 				TStore.item_list = message.split("=")[1].split("~")
+				TStore.create_categories()
 			}
 			if(message.startsWith("TEAMS_STORAGE_DATA")){
 				this.parse_and_update(message.split("=")[1])
