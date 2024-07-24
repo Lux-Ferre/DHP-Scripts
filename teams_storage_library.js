@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Idle-Pixel Teams Storage Manager
 // @namespace    luxferre.dev
-// @version      1.1.0
+// @version      1.2.0
 // @description  Library for parsing teams storage data.
 // @author       Lux-Ferre
 // @license      MIT
@@ -49,6 +49,7 @@
 			}
 			this.spawn_observer()
 			Modals.clicksAddItemTeamStorage()
+			IdlePixelPlus.sendMessage("TEAM_REFRESH_STORAGE")
 		}
 		
 		onMessageReceived(message) {
