@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Idle-Pixel Teams Storage Manager
 // @namespace    luxferre.dev
-// @version      1.2.1
+// @version      1.3.0
 // @description  Library for parsing teams storage data.
 // @author       Lux-Ferre
 // @license      MIT
@@ -38,6 +38,8 @@
 				"cooking": [],
 				"fishing": [],
 				"combat": [],
+				"invention": [],
+				"chests": [],
 				"other": []
 			}
 		}
@@ -85,7 +87,7 @@
 		
 		create_categories(){
 			const unsorted_items = new Set(this.item_list)
-			const panel_list = ["brewing", "mining", "crafting", "farming", "gathering", "woodcutting", "cooking", "fishing", "combat"]
+			const panel_list = ["brewing", "mining", "crafting", "farming", "gathering", "woodcutting", "cooking", "fishing", "combat", "invention"]
 			
 			panel_list.forEach(panel =>{
 				$("itembox", $(`#panel-${panel}`)).each((index, obj)=>{
@@ -98,8 +100,21 @@
 				})
 			})
 			unsorted_items.forEach(item_name=>{
-				TStore.category_map[item_name] = "other"
-				TStore.categories.other.push(item_name)
+				if(item_name.includes("gaurdian")){
+					TStore.category_map[item_name] = "combat"
+					TStore.categories.combat.push(item_name)
+					unsorted_items.delete(item_name)
+				} else if(["key", "orb", "chest"].some(type=>{
+					if(item_name.includes(type)){
+						TStore.category_map[item_name] = "chests";
+						TStore.categories.chests.push(item_name);
+						unsorted_items.delete(item_name)
+						return true
+					}
+				})){} else {
+					TStore.category_map[item_name] = "other"
+					TStore.categories.other.push(item_name)
+				}
 			})
 		}
 	}
