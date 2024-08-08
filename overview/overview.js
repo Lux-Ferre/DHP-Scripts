@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name			IdlePixel+ Overview Panel
 // @namespace		lbtechnology.info
-// @version 		1.5.1
+// @version 		1.5.2
 // @description		Single panel to control many skills
 // @author			Lux-Ferre
 // @license			MIT
 // @match			*://idle-pixel.com/login/play*
 // @grant			none
 // @require			https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
-// @require		 	https://greasyfork.org/scripts/491983-idlepixel-plugin-paneller/code/IdlePixel%2B%20Plugin%20Paneller.js?anticache=20240410
+// @require		 	https://greasyfork.org/scripts/491983-idlepixel-plugin-paneller/code/IdlePixel%2B%20Plugin%20Paneller.js?anticache=20240808
 // ==/UserScript==
 
 (function() {
@@ -283,7 +283,7 @@
 	            <div id="overviewFarmingPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewFarmingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Farming.clicksPlot(5)" /><label id="overviewFarmingTimer-5" class="form-label">0</label></div>
 	        </div>
 	        <div class="row">
-	            <div class="col text-center overviewDottedBorder"><button id="overviewHarvestAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickHarvest()">Harvest All</button></div>
+	            <div class="col text-center overviewDottedBorder"><button id="overviewHarvestAll" class="btn btn-primary" type="button" onclick="sCFarming().quickHarvest()">Harvest All</button></div>
 	        </div>
 	    </div>
 	    <div id="overviewGatheringModule" class="col overviewSkillModule">
@@ -317,7 +317,7 @@
 	            <div id="overviewWCPlot-5" class="col text-center d-flex flex-column align-items-center"><img id="overviewWoodcuttingPatchImg-5" class="farming-patch" src="https://idlepixel.s3.us-east-2.amazonaws.com/images/woodcutting_none.png" width="75" onclick="Woodcutting.clicksPlot(5)" /><label id="overviewWoodcuttingTimer-5" class="form-label">0</label></div>
 	        </div>
 	        <div class="row">
-	            <div class="col text-center overviewDottedBorder"><button id="overviewChopAll" class="btn btn-primary" type="button" onclick="IdlePixelPlus.plugins.slapchop.quickChop()">Chop All</button></div>
+	            <div class="col text-center overviewDottedBorder"><button id="overviewChopAll" class="btn btn-primary" type="button" onclick="sCWoodcutting().quickChop()">Chop All</button></div>
 	        </div>
 	    </div>
 	    <div id="overviewSmeltingModule" class="col overviewSkillModule">
