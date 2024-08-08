@@ -59,5 +59,5 @@ None
 <h3 align="center"> Meta-data</h3>
 
  - Filename: overview.js
- - Version: 1.5.1
+ - Version: 1.5.2
  - Authors: Lux-Ferre
