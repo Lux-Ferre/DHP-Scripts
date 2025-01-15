@@ -55,8 +55,8 @@
 						label: "Player to send duplicate cards to automatically.",
 						type: "string",
 						default: null
-					},
-				],
+					}
+				]
 			})
 			this.login_loaded = false
 			this.dupe_sending = false;
