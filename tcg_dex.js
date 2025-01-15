@@ -28,21 +28,21 @@
 					{
 						label:
 							"------------------------------------------------<br/>Notification<br/>------------------------------------------------",
-						type: "label",
+						type: "label"
 					},
 					{
 						id: "tcgNotification",
 						label:
 							"Enable TCG Card Buying Available Notification<br/>(Default: Enabled)",
 						type: "boolean",
-						default: true,
+						default: true
 					},
 					{
 						id: "newCardTimer",
 						label:
 							"New Card Timer<br/>(How long do you want a card to show as new, in minutes.)",
 						type: "int",
-						default: 15,
+						default: 15
 					},
 					{
 						id: "enableSend",
