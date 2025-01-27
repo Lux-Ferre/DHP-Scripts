@@ -596,13 +596,6 @@
 				let row_frag = this.create_row_fragment(template, category);
 
 				card_container_frag.appendChild(row_frag);
-
-				// if (category.desc !== "LEGENDARY") {
-				// 	card_container_frag.appendChild(row_frag);
-				// } else {
-				// 	let newCardArea = card_container_frag.getElementById("tcgDex-New_Card-Container");
-				// 	newCardArea.insertAdjacentElement("afterend", row_frag);
-				// }
 			});
 
 			for (const [cat, counts] of Object.entries(all_counts)) {
