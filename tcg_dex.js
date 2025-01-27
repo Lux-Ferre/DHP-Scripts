@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.0.0
+// @version      1.0.1
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -380,8 +380,8 @@
 					CardData.fetchData();
 					setTimeout(function () {
 						this.dupe_sending = false;
-					}, 10000);
-				}, 20000);
+					}.bind(this), 10000);
+				}.bind(this), 20000);
 			}
 		}
 
