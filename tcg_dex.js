@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.0.2
+// @version      1.0.3
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -212,8 +212,9 @@
 			const uniNormalSetOverall = new Set();
 
 			currentCards.forEach((card) => {
-				if (!this.newest_card_ids[card.id] || card.cardNum > this.newest_card_ids[card.id]) {
-					this.newest_card_ids[card.id] = card.cardNum;
+				const new_id = `${card.id}${card.holo? "_h":""}`
+				if (!this.newest_card_ids[new_id] || card.cardNum > this.newest_card_ids[new_id]) {
+					this.newest_card_ids[new_id] = card.cardNum;
 				}
 
 				const category = Object.entries(CardData.data).find(
@@ -566,6 +567,7 @@
 			clone.querySelector(".fas").classList.add(IdlePixelPlus.plugins.tcgDex.getTcgSetting("new") ? "fa-eye-slash" : "fa-eye")
 
 			category_div.addEventListener("click", (event) => {
+				if (event.target.closest(".tcg_category_container_inner")) {return;}
 				const ele = event.currentTarget
 				const category_inner = ele.querySelector(".tcg_category_container_inner")
 				const isVisible = getComputedStyle(category_inner).display !== "none"
@@ -925,7 +927,7 @@
 				const card_data = {
 					id: card_id,
 					holo: holo,
-					cardNum: this.newest_card_ids[card_id],
+					cardNum: this.newest_card_ids[order_key],
 					count: count,
 				}
 
