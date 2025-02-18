@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.0.5
+// @version      1.1.0
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -741,6 +741,21 @@
 			$("body").append($(row_template_str))
 		}
 
+		add_link_to_collection(){
+			const url = `https://luxferre.dev/idlepixel/tcg?user=${window.var_username}`
+
+			const button = `
+				<div class="itembox-rings hover" onclick="window.open('${url}', '_blank')">
+					<div class="center mt-1"><img alt="" src="https://cdn.idle-pixel.com/images/book_template.png" title="Collection Viewer"></div>
+					<div class="center mt-2"><span>CLXN VIEW</span></div>
+				</div>
+				`
+
+			const boxes = document.getElementById("panel-criptoe-tcg").querySelectorAll(".itembox-rings")
+			const stats = boxes[boxes.length-1].parentNode
+			stats.insertAdjacentHTML("afterend", button)
+		}
+
 		initialisation(){
 			if(!CardData.data){
 				setTimeout(() => {
@@ -754,6 +769,7 @@
 			this.create_total_row_template()
 			this.create_new_row_template()
 			this.cardStyling()
+			this.add_link_to_collection()
 
 			this.categoriesTCG = this.getCategoryData();
 
