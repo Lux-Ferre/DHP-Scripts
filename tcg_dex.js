@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.0.3
+// @version      1.0.5
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -741,45 +741,59 @@
 			$("body").append($(row_template_str))
 		}
 
-		onLogin() {
-			this.new_card_timer = IdlePixelPlus.plugins.tcgDex.getConfig("newCardTimer")
+		initialisation(){
+			if(!CardData.data){
+				setTimeout(() => {
+					IdlePixelPlus.plugins.tcgDex.initialisation()
+				}, 1000)
+				return
+			}
+
 			this.create_card_template()
 			this.create_row_template()
 			this.create_total_row_template()
 			this.create_new_row_template()
-			CToe.loadCards = function () {};
-			IdlePixelPlus.plugins['tcgDex'].cardStyling();
+			this.cardStyling()
+
+			this.categoriesTCG = this.getCategoryData();
+
+			playername = IdlePixelPlus.getVarOrDefault("username", "", "string")
+			if (!localStorage.getItem(`${playername}.tcgSettings`)) {
+				let defaultSettings = this.categoriesTCG.reduce((settings, category) => {
+					settings[category.desc] = true;
+					return settings;
+				}, {});
+				defaultSettings.new = true;
+				localStorage.setItem(
+					`${playername}.tcgSettings`,
+					JSON.stringify(defaultSettings)
+				);
+			} else {
+				IdlePixelPlus.plugins.tcgDex.ensureNewSettingExists();
+			}
+
+			this.initializeDatabase()
+			this.tcgBuyerNotifications()
+			this.updateTCGNotification()
+
+			this.card_order = new Map()
+			let order = 1
+			Object.keys(CardData.data).forEach((card_name) => {
+				this.card_order.set(`${card_name}_h`, order++);
+				this.card_order.set(`${card_name}`, order++);
+			})
+			this.login_loaded = true
+
+		}
+
+		onLogin() {
+			this.new_card_timer = IdlePixelPlus.plugins.tcgDex.getConfig("newCardTimer")
+			CToe.loadCards = function () {}
 			if (!CardData.data) {
 				CardData.fetchData();
 			}
-			playername = IdlePixelPlus.getVarOrDefault("username", "", "string");
-			setTimeout(() => {
-				this.categoriesTCG = this.getCategoryData();
-				if (!localStorage.getItem(`${playername}.tcgSettings`)) {
-					let defaultSettings = this.categoriesTCG.reduce((settings, category) => {
-						settings[category.desc] = true;
-						return settings;
-					}, {});
-					defaultSettings.new = true;
-					localStorage.setItem(
-						`${playername}.tcgSettings`,
-						JSON.stringify(defaultSettings)
-					);
-				} else {
-					IdlePixelPlus.plugins.tcgDex.ensureNewSettingExists();
-				}
-				this.initializeDatabase();
-				this.tcgBuyerNotifications();
-				this.updateTCGNotification();
 
-				this.card_order = new Map()
-				let order = 1;
-				Object.keys(CardData.data).forEach((card_name) => {
-					this.card_order.set(`${card_name}_h`, order++);
-					this.card_order.set(`${card_name}`, order++);
-				});
-				this.login_loaded = true
-			}, 1000);
+			this.initialisation()
 		}
 
 		onVariableSet(key, valueBefore, valueAfter) {
