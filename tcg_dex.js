@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.1.0
+// @version      1.3.1
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
 // @grant        none
 // @license      MIT
 // @require      https://greasyfork.org/scripts/441206-idlepixel/code/IdlePixel+.js?anticache=20220905
+// @require		 https://greasyfork.org/scripts/527481/code/IdlePixel%20Dialogue%20Handler.js?anticache=20250219b
 // ==/UserScript==
 
 (function () {
@@ -90,6 +91,8 @@
 				"BREEDING": "black",
 				"LIMITED": "black",
 			}
+
+			this.cards_received = []
 
 			this.load_fa()
 		}
@@ -792,6 +795,16 @@
 			this.tcgBuyerNotifications()
 			this.updateTCGNotification()
 
+			const popup_handler = function(title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable){
+				const name = message.split("<")[0].slice(27)
+				const card = message.split("<")[3].split(">")[1]
+
+				IdlePixelPlus.plugins.tcgDex.cards_received.push(`${card}(${name})`)
+				return [title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable]
+			}
+
+			dialoguer.register_handler("TRADE COMPLETED", popup_handler, false)
+
 			this.card_order = new Map()
 			let order = 1
 			Object.keys(CardData.data).forEach((card_name) => {
@@ -799,7 +812,6 @@
 				this.card_order.set(`${card_name}`, order++);
 			})
 			this.login_loaded = true
-
 		}
 
 		onLogin() {
