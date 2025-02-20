@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.4.0
+// @version      1.4.1
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -216,8 +216,8 @@
 
 			currentCards.forEach((card) => {
 				const new_id = `${card.id}${card.holo? "_h":""}`
-				if (!this.newest_card_ids[new_id] || card.cardNum > this.newest_card_ids[new_id]) {
-					this.newest_card_ids[new_id] = card.cardNum;
+				if (!this.newest_card_ids[new_id]) {
+					this.newest_card_ids.set(new_id, card.cardNum);
 				}
 
 				const category = Object.entries(CardData.data).find(
@@ -615,7 +615,7 @@
 		create_card_template(){
 			const card_template_str = `
 				<template id="tcg_card_template">
-					<div id="" onclick="Modals.open_tcg_give_card(null, this.getAttribute('data-card-id'))" style="" class='tcg-card hover'>
+					<div id="" onclick="IdlePixelPlus.plugins.tcgDex.send_card(this.getAttribute('data-card-id'), this.getAttribute('id'))" style="" class='tcg-card hover'>
 						<div class='row d-flex justify-content-around w-100'>
 							<div class='col text-start' style="max-width:80%; margin-right:0; padding-right:1px; padding-left:0">
 								<div class='tcg-card-title' style="white-space:nowrap; text-overflow:clip; overflow:hidden;"></div>
@@ -884,6 +884,12 @@
 			}
 		}
 
+		send_card(card_id, card_name){
+			Modals.open_tcg_give_card(null, card_id)
+			card_name = card_name.replace("_Normal", "").replace("_Holo", "_h")
+			IdlePixelPlus.plugins.tcgDex.newest_card_ids.delete(card_name)
+		}
+
 		create_card_fragment(template, card){
 			const id = card.cardNum
 			const holo = card.holo
@@ -1014,7 +1020,7 @@
 				const card_data = {
 					id: card_id,
 					holo: holo,
-					cardNum: this.newest_card_ids[order_key],
+					cardNum: this.newest_card_ids.get(order_key),
 					count: count,
 				}
 
