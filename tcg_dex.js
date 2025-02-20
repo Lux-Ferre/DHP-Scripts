@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.3.1
+// @version      1.4.0
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -748,7 +748,7 @@
 			const url = `https://luxferre.dev/idlepixel/tcg?user=${window.var_username}`
 
 			const button = `
-				<div class="itembox-rings hover" onclick="window.open('${url}', '_blank')">
+				<div id="tcg_collection_button" class="itembox-rings hover" onclick="window.open('${url}', '_blank')">
 					<div class="center mt-1"><img alt="" src="https://cdn.idle-pixel.com/images/book_template.png" title="Collection Viewer"></div>
 					<div class="center mt-2"><span>CLXN VIEW</span></div>
 				</div>
@@ -757,6 +757,39 @@
 			const boxes = document.getElementById("panel-criptoe-tcg").querySelectorAll(".itembox-rings")
 			const stats = boxes[boxes.length-1].parentNode
 			stats.insertAdjacentHTML("afterend", button)
+		}
+
+		add_link_to_received(){
+			const button = `
+				<div id="received_card_button" class="itembox-rings hover">
+					<div class="center mt-1"><img alt="" height="50px" width="50px" src="https://cdn.idle-pixel.com/images/castle_chest.png" title="Received Cards"></div>
+					<div class="center mt-2"><span>Received</span></div>
+				</div>
+				`
+
+			document.getElementById("tcg_collection_button").insertAdjacentHTML("beforebegin", button)
+
+			document.getElementById("received_card_button").addEventListener("click", function(){
+				document.getElementById("received_card_button").classList.remove("animation-glow")
+				let inner_html = ""
+				IdlePixelPlus.plugins.tcgDex.cards_received.forEach(card=>{
+					inner_html += `<li>${card}</li>`
+				})
+				document.getElementById("received_card_list").innerHTML = inner_html
+				$("#tcg_received_list_modal").modal("show")
+			})
+		}
+
+		create_received_list_modal() {
+			const modal_string = `
+				<div class="modal fade" id="tcg_received_list_modal" tabindex="-1" data-bs-theme="dark">
+					<div class="modal-dialog">
+						<div class="modal-content" style="color: white;">
+							<ul style="list-style-type: circle; margin-top: 5px;" id="received_card_list"></ul>
+						</div>
+					</div>
+				</div>`
+			document.body.insertAdjacentHTML("beforeend", modal_string);
 		}
 
 		initialisation(){
@@ -772,7 +805,9 @@
 			this.create_total_row_template()
 			this.create_new_row_template()
 			this.cardStyling()
+			this.create_received_list_modal()
 			this.add_link_to_collection()
+			this.add_link_to_received()
 
 			this.categoriesTCG = this.getCategoryData();
 
@@ -796,10 +831,20 @@
 			this.updateTCGNotification()
 
 			const popup_handler = function(title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable){
-				const name = message.split("<")[0].slice(27)
-				const card = message.split("<")[3].split(">")[1]
+				let name, card
+				if (message.includes("unrevealed")){
+					name = message.split("from ")[1]
+					card = "Unrevealed"
+				} else {
+					name = message.split("<")[0].slice(27)
+					card = message.split("<")[3].split(">")[1]
+				}
 
-				IdlePixelPlus.plugins.tcgDex.cards_received.push(`${card}(${name})`)
+				let time = new Date()
+				time = time.toLocaleString()
+
+				IdlePixelPlus.plugins.tcgDex.cards_received.push(`${card}(${name}) [${time}]`)
+				document.getElementById("received_card_button").classList.add("animation-glow")
 				return [title, image_path, message, primary_button_text, secondary_button_text, command, force_unclosable]
 			}
 
