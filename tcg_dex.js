@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         IdlePixel TCG Dex (Lux Fork)
 // @namespace    luxferre.dev
-// @version      1.4.1
+// @version      1.5.0
 // @description  Organizational script for the Criptoe Trading Card Game
 // @author       GodofNades & Lux-Ferre
 // @match        *://idle-pixel.com/login/play*
@@ -60,7 +60,8 @@
 				]
 			})
 			this.login_loaded = false
-			this.dupe_sending = false;
+			this.dupe_sending = false
+			this.pause_processing = false
 			this.newest_card_ids = new Map()
 			this.categoriesTCG = []
 			this.row_bg_colours = {
@@ -404,6 +405,71 @@
 					resolve(request.result);
 				};
 			});
+		}
+
+		add_open_multi_button(){
+			const new_button = `<table data-bs-dismiss="modal" onclick="IdlePixelPlus.plugins.tcgDex.multi_open()" class="modal-table-button hover">
+              <tbody><tr>
+                <td>
+                  <img alt="" src="${window.get_image("images/tcg_back_50.png")}" class="w50" title="tcg_back_50">
+                </td>
+                <td>
+                  REVEAL MULTIPLE
+                  <hr>
+                  <span class="color-grey font-small">Reveal many cards for yourself.</span>
+                </td>
+              </tr>
+            </tbody></table>`
+
+			let inner = document.getElementById("modal-open-tcg-unknown").querySelector("center").innerHTML
+			inner += new_button
+			document.getElementById("modal-open-tcg-unknown").querySelector("center").innerHTML = inner
+
+			const modal_string = `
+				<div class="modal fade" id="tcg_open_multi_modal" tabindex="-1" data-bs-theme="dark">
+					<div class="modal-dialog">
+						<div class="modal-content justify-content-around d-flex flex-column" style="color: white; min-height:200px;">
+							<div class="row"><div class="col d-flex justify-content-center">
+								<img alt="" src="${window.get_image("images/tcg_back_50.png")}">
+							</div></div>
+							<div class="row"><div class="col d-flex justify-content-center">
+								How many do you want to open?
+							</div></div>
+							<div class="row"><div class="col d-flex justify-content-center">
+								<input type="number" id="tcg_multi_open_count">
+							</div></div>
+							<div class="row"><div class="col d-flex justify-content-center">
+								<button id="tcg_multi_button" data-bs-dismiss="modal" class="bg-info-subtle"><span class="font-pixel hover">Open</span></button>
+							</div></div>
+						</div>
+					</div>
+				</div>`
+			document.body.insertAdjacentHTML("beforeend", modal_string);
+
+			document.getElementById("tcg_multi_button").addEventListener("click", (e) => {
+				let input = document.getElementById("tcg_multi_open_count").value
+				if (input === "") {
+					return
+				} else {
+					input = parseInt(input)
+				}
+				if (input > parseInt(window.var_tcg_unknown)){
+					input = parseInt(window.var_tcg_unknown)
+				}
+
+				IdlePixelPlus.plugins.tcgDex.pause_processing = true;
+				setTimeout(function () {
+					IdlePixelPlus.plugins.tcgDex.pause_processing = false;
+					websocket.send("RFRESH_TCG_CLIENT")
+				}, 2000)
+				for (let i = 0; i < input; i++) {
+					websocket.send("REVEAL_TCG_CARD")
+				}
+			})
+		}
+
+		multi_open(){
+			$("#tcg_open_multi_modal").modal("show")
 		}
 
 		cardStyling() {
@@ -808,6 +874,7 @@
 			this.create_received_list_modal()
 			this.add_link_to_collection()
 			this.add_link_to_received()
+			this.add_open_multi_button()
 
 			this.categoriesTCG = this.getCategoryData();
 
@@ -1137,6 +1204,7 @@
 
 		onMessageReceived(data) {
 			if (data.startsWith("REFRESH_TCG")) {
+				if(this.pause_processing){return;}
 				const parts = data.replace("REFRESH_TCG=", "").split("~")
 
 				const {current_cards, card_type_count} = this.parse_card_stream(parts)
